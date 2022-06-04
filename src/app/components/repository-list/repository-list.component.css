@@ -1,0 +1,29 @@
+
+.list {
+  text-align: left;
+  max-width: 750px;
+  margin: auto;
+}
+nav ul{height:50vh; width:100%}
+nav ul{overflow:hidden; overflow-y:scroll;border:1px solid #d0d0d0;}
+
+.list-group-item-detail {
+  text-align: left;
+  margin-left: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+html, body
+{
+    height: 100%;
+}
+.master-container {
+  height: 100%;
+  width:100%;
+  text-align: center; 
+}
+.center .master-container{
+  margin-left: auto;
+  margin-right: auto;
+}

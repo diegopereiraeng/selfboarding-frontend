@@ -1,0 +1,147 @@
+<main class="l-main" *ngIf="!loading && currentMsgToChild1 === ''">
+  <div class="content-wrapper content-wrapper--with-bg">
+      
+      <div class="page-content">
+        <h2 class="py-3 text-center font-bold font-up blue-text">Repositories</h2>
+        <div class="list row" *ngIf="repositoryEnabled() && !loading" [hidden]="!authenticated()">
+          <div class="col-xs-3" *ngIf="repositoryFilterEnabled() && !repositoryEmpty">
+            <div class="input-group mb-3">
+        
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search by name"
+                [(ngModel)]="name"
+              />
+              <div class="input-group-append">
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="searchName()"
+                >
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row master-container" *ngIf="repositoryEmpty && !loading" >
+            <button class="m-3 btn btn-sm btn-primary center" (click)="discoverRepositories()" >Discover Repositories</button>
+          </div>
+          <div class="col-md-6" *ngIf="!repositoryEmpty && !loading">
+            
+            <!-- <h4 *ngIf="!repositoryEmpty">Repositories List</h4> -->
+            <nav>
+              <ul class="list-group">
+                <div *ngFor="let repository of repositories ; let i = index">
+                <li
+                  class="list-group-item"
+                  [class.active]="i == currentIndex"
+                  (click)="setActiveRepository(repository, i)"
+                >
+                  {{ repository.name }}
+                </li>
+                <div *ngIf="currentIndex == i && userAgent != 'desktop' && userAgent != 'chrome'" class="list-group-item-detail">
+                  <div>
+                    <label><strong>Name:</strong></label> {{ currentRepository?.name }}
+                  </div>
+                  <div>
+                    <label><strong>Description:</strong></label>
+                    {{ currentRepository?.description }}
+                  </div>
+                  <div>
+                    <label><strong>Default Branch:</strong></label>
+                    {{ currentRepository?.branch }}
+                  </div>
+                  <div>
+                    <label><strong>Owner:</strong></label>
+                    {{ currentRepository?.owner }}
+                  </div>
+                  <div>
+                    <label><strong>Status:</strong></label>
+                    {{ currentRepository?.enabled ? "Onboarded" : "Pending" }}
+                  </div>
+                  <span class="badge badge-primary">{{ currentRepository?.language }}</span>
+                  <br>
+                  <a  routerLink="/repositories/{{ currentRepository?.id }}">
+                    <button class="m-3 btn btn-sm btn-secondary" (click)="onboarding()">
+                      Edit
+                    </button>
+                  </a>
+                  <br>
+                  <button class="m-3 btn btn-sm btn-success" *ngIf="onboardingEnabled()" (click)="onboarding()">
+                    Onboarding Harnesss
+                  </button>
+                  <button class="m-3 btn btn-sm btn-danger" (click)="removeOneRepository()">
+                    Remove {{ getShortName(currentRepository?.name!) }}
+                  </button>
+                </div>
+                </div> 
+              </ul>
+            </nav>
+            
+          </div>
+          <div class="col-md-6" >
+            <div *ngIf="currentRepository && userAgent != 'mobile'">
+              <h4>Repository</h4>
+              <div>
+                <label><strong>Name:</strong></label> {{ currentRepository.name }}
+              </div>
+              <div>
+                <label><strong>Description:</strong></label>
+                {{ currentRepository.description }}
+              </div>
+              <div>
+                <label><strong>Default Branch:</strong></label>
+                {{ currentRepository.branch }}
+              </div>
+              <div>
+                <label><strong>Owner:</strong></label>
+                {{ currentRepository.owner }}
+              </div>
+              <div>
+                <label><strong>Status:</strong></label>
+                {{ currentRepository.enabled ? "Onboarded" : "Pending" }}
+              </div>
+              <span class="badge badge-primary">{{ currentRepository.language }}</span>
+              <br>
+              <a  routerLink="/repositories/{{ currentRepository.id }}">
+                <button class="m-3 btn btn-sm btn-secondary" (click)="onboarding()">
+                  Edit
+                </button>
+              </a>
+              <br>
+              <button class="m-3 btn btn-sm btn-success" *ngIf="onboardingEnabled()" (click)="onboarding()">
+                Onboarding Harnesss
+              </button>
+              <button class="m-3 btn btn-sm btn-danger" (click)="removeOneRepository()">
+                Remove {{ getShortName(currentRepository.name!) }}
+              </button>
+        
+            </div>
+            
+            <div *ngIf="!currentRepository && !loading" class="master-container">
+              <button class="m-3 btn btn-sm btn-primary center" (click)="discoverRepositories()" *ngIf="!repositoryEmpty">Discover/Update Repositories</button>
+            </div>
+          </div>
+        </div>
+        <div [hidden]="authenticated()">
+          <p>Login to see Repositories</p>
+        </div>
+      </div>
+  </div>
+</main>
+<app-onboarding *ngIf="currentMsgToChild1 != ''" [msgFromParent1]='currentMsgToChild1'></app-onboarding>
+
+<div class="row" *ngIf="loading">
+  <div class="loading">
+    <div class="loading-text">
+      <span class="loading-text-words">L</span>
+      <span class="loading-text-words">O</span>
+      <span class="loading-text-words">A</span>
+      <span class="loading-text-words">D</span>
+      <span class="loading-text-words">I</span>
+      <span class="loading-text-words">N</span>
+      <span class="loading-text-words">G</span>
+    </div>
+  </div>
+</div>

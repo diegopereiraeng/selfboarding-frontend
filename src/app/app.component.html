@@ -1,0 +1,37 @@
+<div class="master">
+  <div class="container">
+  <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <a href="#" class="navbar-brand" style="margin:10px;padding:0px">{{getTitle()}}</a>
+    <div class="navbar-nav mr-auto scroll">
+      <li class="nav-item"><a routerLink="/home" class="nav-link">Home</a></li>
+      <!-- <li class="nav-item" *ngIf="allowPromotions()">
+        <a routerLink="promotions" class="nav-link" *ngIf="authenticated()">Promotions</a>
+      </li> -->
+      <!-- <li class="nav-item" *ngIf="authenticated()">
+        <a routerLink="tutorials" class="nav-link">Tutorials</a>
+      </li>
+      <li class="nav-item" *ngIf="authenticated()">
+        <a routerLink="add" class="nav-link" >Add</a>
+      </li> -->
+      <li class="nav-item" *ngIf="allowRepositories()">
+        <a routerLink="template-list" class="nav-link" *ngIf="authenticated()">Templates</a>
+      </li>
+      <li class="nav-item" *ngIf="allowRepositories()">
+        <a routerLink="repositories" class="nav-link" *ngIf="authenticated()">Repositories</a>
+      </li>
+      <li class="nav-item" *ngIf="allowRepositories()">
+        <a routerLink="onboarding" class="nav-link" *ngIf="authenticated()">Onboarding</a>
+      </li>
+      <li class="nav-item" *ngIf="allowAdmin()">
+        <a routerLink="admin" class="nav-link" *ngIf="authenticated()">Admin</a>
+      </li>
+      <li class="nav-item"><a routerLink="/login" class="nav-link" *ngIf="!authenticated()">Login</a></li>
+      <li><a (click)="logout()" class="nav-link" *ngIf="authenticated()">Logout</a></li>
+
+    </div>
+  </nav>
+</div>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+</div>

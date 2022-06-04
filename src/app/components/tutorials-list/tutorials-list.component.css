@@ -1,0 +1,13 @@
+.list {
+  text-align: left;
+  max-width: 100%;
+  margin: auto;
+}
+
+.list-group-item-detail {
+  text-align: left;
+  margin-left: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+

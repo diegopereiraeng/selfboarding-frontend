@@ -1,0 +1,45 @@
+<div class="alert alert-danger" [hidden]="!error">
+	There was a problem logging in. Please try again.
+</div>
+<form role="form" (submit)="login()" *ngIf="loginEnabled() === 'v1'">
+	<div class="form-group">
+		<label for="username">Username:</label> <input type="text"
+			class="form-control" id="username" name="username" [(ngModel)]="credentials.username"/>
+	</div>
+	<div class="form-group">
+		<label for="password">Password:</label> <input type="password"
+			class="form-control" id="password" name="password" [(ngModel)]="credentials.password"/>
+	</div>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<div class="wrapper" *ngIf="loginEnabled() === 'v2'">
+    <h1>Login</h1>
+    <p>Welcome back you've <br> been missed!</p>
+    <form role="form" (submit)="login()">
+		<div class="form-group">
+			<label for="username">Username:</label>
+			<input type="text" placeholder="Enter username" id="username" name="username" [(ngModel)]="credentials.username">
+		</div>
+		<div class="form-group">
+			<label for="password">Password:</label> 
+			<input type="password" placeholder="Password" id="password" name="password" [(ngModel)]="credentials.password">
+		</div>
+		<p class="recover">
+			<a href="#">Recover Password</a>
+		</p>
+		<button type="submit">Sign in</button>
+    </form>
+    <div *ngIf="socialEnabled() === 'all'">
+		<p class="or">
+		----- or continue with -----
+		</p>
+		<div class="icons">
+			<i class="fab fa-google"></i>
+			<i class="fab fa-github"></i>
+			<i class="fab fa-facebook"></i>
+		</div>
+	</div>
+    <div class="not-member">
+    Not a member? <a href="/signup">Register Now</a>
+    </div>
+</div>

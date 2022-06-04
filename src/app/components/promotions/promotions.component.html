@@ -1,0 +1,103 @@
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<div class="container-fluid" *ngIf="isPromoEnabled('Promotions')">
+    <ngb-carousel *ngIf="images && isPromoEnabled('Promotions_Banner')" >
+    <ng-template ngbSlide *ngIf="images[0]">
+        <div class="wrapper">
+        <img [src]="images[0]" alt="Random first slide" style="width: 100%; height: 60%">
+        </div>
+    </ng-template>
+    <ng-template ngbSlide *ngIf="images[1]">
+        <div class="wrapper">
+        <img [src]="images[1]" alt="Random second slide" style="width: 100%; height: 60%">
+        </div>
+    </ng-template>
+    <ng-template ngbSlide *ngIf="images[2]">
+        <div class="wrapper">
+        <img [src]="images[2]"  alt="Random third slide" style="width: 100%; height: 60%">
+        </div>
+        <div class="carousel-caption">
+        <h3>Santander Promo 3</h3>
+        <p>harness.io</p>
+        </div>
+    </ng-template>
+    <ng-template ngbSlide *ngIf="images[3]">
+        <div class="wrapper">
+        <img [src]="images[3]"  alt="Random third slide" style="width: 100%; height: 60%">
+        </div>
+    </ng-template>
+    </ngb-carousel>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-3" *ngIf="isPromoEnabled('PROMO_ONE')">
+                    <div class="card">
+                        <div class="image-container">
+                            <div class="first">
+                                <div class="d-flex justify-content-between align-items-center">
+                                <span class="discount">15%</span>
+                                <span class="wishlist"><i class="fa fa-heart-o"></i></span>
+                                </div>
+                            </div>
+                            <img src="https://loyaltyhubsin.santander.com.mx/media/images/show-image.jpg?idItem=3923&sizeImage=M&typeItem=promotion" class="img-fluid rounded thumbnail-image">
+                        </div>
+                        <div class="product-detail-container p-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="dress-name">Santander - Hot Sale</h5>
+                                    
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center pt-1">
+                                    
+                                    <div class="d-flex content-text">
+                                        15% de bonificación por cada $2,000 pesos de compra en línea 
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center pt-1">
+                                    <div>
+                                        <i class="fa fa-star-o rating-star"></i>
+                                        <span class="rating-number">4.8</span>
+                                    </div>
+                                    <span class="buy"> Ver promoción</span>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="col-md-3" *ngIf="promotionCreation() ">
+                <div class="card">
+                    <div class="image-container">
+                        <div class="first">
+                            <div class="d-flex justify-content-between align-items-center">
+                            <span class="discount">18 Meses</span>
+                            <span class="wishlist"><i class="fa fa-heart-o"></i></span>
+                            </div>
+                        </div>
+                        <img src="{{ promotion_two.href }}" class="img-fluid rounded thumbnail-image">
+                    </div>
+                    <div class="product-detail-container p-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="dress-name">{{ promotion_two.title }}</h5>
+                                
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-1">
+                                
+                                <div class="d-flex content-text">
+                                    {{ promotion_two.desc }}
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-1 harness">
+                                <div>
+                                    <i class="fa fa-star-o rating-star"></i>
+                                    <span class="rating-number">4.8</span>
+                                </div>
+                                <span class="buy"> {{ (promotion_two.type === 'active') ? 'Ver promoción' : 'Expirada' }}</span>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+

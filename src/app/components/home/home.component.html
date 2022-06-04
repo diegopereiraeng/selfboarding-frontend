@@ -1,0 +1,32 @@
+<div *ngIf="homeEnabled() === 'v1'">
+	<h1>Greeting</h1>
+	<div [hidden]="!authenticated()">
+		<p>The ID is {{greeting.id}}</p>
+		<p>The content is {{greeting.content}}</p>
+	</div>
+	<div [hidden]="authenticated()">
+		<p>Login to see your greeting</p>
+	</div>
+</div>
+<div class="container" *ngIf="homeEnabled() === 'v2'">
+	
+    <div class="box">
+
+		<div class="user">
+            <div class="block"></div>
+            <p>{{ getGreatings() || '' }}</p>
+        </div>
+
+        <div class="title">
+            <span class="block"></span>
+            <h1>Harness.io <span></span></h1>
+        </div>
+
+        <div class="role">
+            <div class="block"></div>
+            <p>The Best Devops Platform for you </p>
+        </div>
+
+
+    </div>
+</div>

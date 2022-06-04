@@ -1,0 +1,15 @@
+div nav{width:100%;}
+
+.scroll {
+    white-space: nowrap; /* [1] */
+    overflow-x: auto; /* [2] */
+    -webkit-overflow-scrolling: touch; /* [3] */
+    -ms-overflow-style: -ms-autohiding-scrollbar; /* [4] */ }
+  
+  /* [5] */
+  .scroll::-webkit-scrollbar {
+    display: none; }
+
+.master{
+  background-image:  linear-gradient(to top, #ffffff 0%, #f6f6f6 99%, #e3eeff 100%);
+}

@@ -1,0 +1,75 @@
+
+<div class="container">
+  <div class="wrapper">
+    <ul class="steps">
+    <li [className]="stepEnabled(1) ? 'is-active' : ''">Step 1</li>
+    <li [className]="stepEnabled(2) ? 'is-active' : ''">Step 2</li>
+    <li [className]="stepEnabled(3) ? 'is-active' : ''">Step 3</li>
+    </ul>
+    <form class="form-wrapper" >
+        <input *ngIf="stepEnabled(2) || stepEnabled(3)" name="currentRepository" [(ngModel)]="currentRepository?.name!" class="form-control-plaintext form-control-sm" type="text" placeholder="Select a Repository" readonly>
+        <input *ngIf="stepEnabled(3)" name="currentTemplate" [(ngModel)]="currentTemplate?.name!" class="form-control-plaintext form-control-sm" type="text" placeholder="Select a Template" readonly>
+    </form>
+    <form class="form-wrapper" [formGroup]="OnboardingGroup" *ngIf="stepEnabled(1)">
+    <fieldset class="section" [className]="stepEnabled(1) ? 'is-active' : ''" *ngIf="stepEnabled(1)">
+        <h3>Start with:</h3>
+        <div class="row cf">
+        <div class="five col">
+            <input type="radio" name="r1" id="r1" checked>
+            <label for="r1">
+                <img width="50" height="50" alt="GitHub Logomark" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"><h4>Github</h4>
+            </label>
+        </div>
+        </div> 
+
+        <div class="inline back"><button class="next" (click)="next(2)" >Next</button></div>
+
+    </fieldset>
+    </form>
+    <form class="form-wrapper" [formGroup]="OnboardingFormGroup2" *ngIf="stepEnabled(2) || stepEnabled(3) || stepEnabled(4)">
+
+    <fieldset class="section" [className]="stepEnabled(3) ? 'is-active' : ''" *ngIf="stepEnabled(3)">
+        <h3>Select a Template</h3>
+        <app-template-list></app-template-list>
+        <button class="m-3 btn btn-sm btn-success"  (click)="next(4)">
+            Onboarding Harnesss
+        </button>
+        <br>
+        
+    </fieldset>
+    <fieldset class="section" [className]="stepEnabled(4) ? 'is-active' : ''" *ngIf="stepEnabled(4)">
+        <h3>{{ (errorMessage === '') ? 'APP Onboarded' : 'Sorry! We coudn\'t onboard your app! =(' }} </h3>
+        <p>{{ (errorMessage === '') ? 'Your repository has been onboarded.' : 'We are sorry for this, but something went wrong.' }}</p>
+        <p *ngIf="errorMessage === ''"></p>
+        <p *ngIf="errorMessage === ''">Welcome to Harness !</p>
+    
+        <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
+        <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
+        <div class="inline"><button class="previous" (click)="next(1)" *ngIf="errorMessage != ''">Back</button></div>
+        <div routerLink="/login" class="button" *ngIf="errorMessage === ''" >Go to Harness</div>
+    </fieldset>
+    </form>
+    <form class="form-wrapper" [formGroup]="OnboardingFormGroup">
+        <fieldset [className]="stepEnabled(2) ? 'is-active' : ''" class="section" *ngIf="stepEnabled(2)">
+        <h3>Select a repository:</h3>
+
+        <app-repositories></app-repositories>
+        
+        <div class="inline"><button class="previous" (click)="next(1)">Back</button></div>
+        <div><button class="next" (click)="next(3)" >Next</button></div>
+        <!-- <div><button class="next" (click)="next(3)" [disabled]="!OnboardingFormGroup.valid">Next</button></div> -->
+        
+        
+        
+        </fieldset>
+    </form>
+    
+    </div>
+</div>
+
+<div class="list row" [hidden]="!authenticated()">
+    {{ msgFromParent1 }}
+</div>
+<div [hidden]="authenticated()">
+	<p>Login to see Tutorials</p>
+</div>

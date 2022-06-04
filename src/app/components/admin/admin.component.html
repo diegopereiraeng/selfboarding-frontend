@@ -1,0 +1,29 @@
+
+<main [hidden]="!authenticated()" class="l-main" *ngIf="adminEnabled() === 'v1'">
+    <div class="content-wrapper content-wrapper--with-bg">
+        <h1 class="page-title">Admin Config</h1>
+        <div class="page-content">
+            <form [formGroup]="HarnessFormGroup" role="form" (submit)="harnessConfig()" *ngIf="!harnessConfigured">
+                <div class="form-group">
+                    <label for="harness_username">Harness Username:</label> <input formControlName="harness_username" type="text"
+                        class="form-control" id="harness_username" name="harness_username" [(ngModel)]="credentials.harness_username" placeholder="your_username@yourcompany.io"/>
+                </div>
+                <div class="form-group">
+                    <label for="harness_password">Harness Password:</label> <input formControlName="harness_password" type="password"
+                        class="form-control" id="harness_password" name="harness_password" [(ngModel)]="credentials.harness_password"/>
+                </div>
+                <div class="form-group">
+                    <label for="account">Harness Account:</label> <input formControlName="account" type="text"
+                        class="form-control" id="account" name="account" [(ngModel)]="credentials.account"/>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Harness Config</button>
+            </form>
+            <div class="containerHarnessEdit">
+                <div class="divHarnessEdit"><button (click)="editHarness()" type="submit" class="btn btn-success buttonHarnessEdit" *ngIf="harnessConfigured">Edit Harness Config</button></div>
+            </div>
+        </div>
+    </div>
+</main>
+<div [hidden]="authenticated()">
+    <p>Login to see Admin panel</p>
+</div>

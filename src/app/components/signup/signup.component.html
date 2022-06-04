@@ -1,0 +1,124 @@
+
+<div class="container">
+    <div class="wrapper">
+    <ul class="steps">
+    <li [className]="stepEnabled(1) ? 'is-active' : ''">Step 1</li>
+    <li [className]="stepEnabled(2) ? 'is-active' : ''">Step 2</li>
+    <li [className]="stepEnabled(3) ? 'is-active' : ''">Step 3</li>
+    </ul>
+    <form class="form-wrapper" [formGroup]="signupFormGroup">
+    <fieldset [className]="stepEnabled(1) ? 'is-active' : ''" class="section" *ngIf="stepEnabled(1)">
+        <h3>Signup</h3>
+
+        <input formControlName="name"  class="form-control" type="text" name="name" id="name" placeholder="Name" > <!-- [(ngModel)]="user.name"> -->
+        <ng-container *ngIf="signupFormGroup.controls.name.touched">
+            <span *ngIf="signupFormGroup.controls.name.errors?.required">
+                Name is Required
+            </span>
+            <span *ngIf="signupFormGroup.controls.name.errors?.invalidName">
+                You can only use a-z A-Z and spaces
+            </span>
+        </ng-container>
+        <input formControlName="username" class="form-control" type="text" name="username" id="username" placeholder="User Name"> <!--  [(ngModel)]="user.username"> -->
+        <ng-container *ngIf="signupFormGroup.controls.username.touched">
+            <span *ngIf="signupFormGroup.controls.username.errors?.required">
+            Username is Required
+            </span>
+            <span *ngIf="signupFormGroup.controls.username.errors?.invalidName">
+                You can only use a-z and _
+            </span>
+        </ng-container>
+        <input formControlName="email" class="form-control" type="text" name="email" id="email"  placeholder="Email"> <!--  [(ngModel)]="user.email"> -->        
+        <ng-container *ngIf="signupFormGroup.controls.email.touched">
+            <span *ngIf="signupFormGroup.controls.email.errors?.required">
+            Email is Required
+            </span>
+            <span *ngIf="signupFormGroup.controls.email.errors?.email || signupFormGroup.controls.email.errors?.invalidEmail">
+            Email is Invalid
+            </span>
+            </ng-container>
+        <div><button class="next" (click)="next(2)" [disabled]="!signupFormGroup.valid">Next</button></div>
+        
+        
+        
+    </fieldset>
+    </form>
+    <form class="form-wrapper" [formGroup]="signupFormGroup2" *ngIf="stepEnabled(2) || stepEnabled(3) || stepEnabled(4)">
+    <fieldset class="section" [className]="stepEnabled(2) ? 'is-active' : ''" *ngIf="stepEnabled(2)">
+        <h3>Account Type</h3>
+        <div class="row cf">
+        <div class="five col">
+            <input type="radio" name="r1" id="r1" checked>
+            <label for="r1">
+            <h4>SecDevOps Engineer</h4>
+            </label>
+        </div>
+        </div> 
+        <div class="row cf">
+        <div class="five col">
+            <input type="radio" name="r1" id="r2"><label for="r2">
+            <h4>Developer</h4>
+            </label>
+        </div>
+        </div> 
+        <div class="row cf">
+        <div class="five col" >
+            <input type="radio" name="r1" id="r3"><label for="r3">
+            <h4>Project Manager</h4>
+            </label>
+        </div>
+        </div>
+        <div class="row cf">
+            <div class="five col" >
+                <input type="radio" name="r1" id="r4"><label for="r4">
+                <h4>Executive</h4>
+                </label>
+            </div>
+        </div>
+        <div class="row cf">
+            <div class="five col" >
+                <input type="radio" name="r1" id="r5"><label for="r5">
+                <h4>Manager</h4>
+                </label>
+            </div>
+        </div>
+        <div class="inline"><button class="previous" (click)="next(1)">Back</button></div>
+        <div class="inline back"><button class="next" (click)="next(3)" [disabled]="!signupFormGroup.valid">Next</button></div>
+
+    </fieldset>
+    <fieldset class="section" [className]="stepEnabled(3) ? 'is-active' : ''" *ngIf="stepEnabled(3)">
+        <h3>Choose a Password</h3>
+        <input formControlName="password" type="password" name="password" id="password" placeholder="Password" ><!-- [(ngModel)]="user.password"> -->
+        <input formControlName="password2" type="password" name="password2" id="password2"  placeholder="Re-enter Password"><!--  [(ngModel)]="user.password2"> -->
+        <div class="inline"><button class="previous" (click)="next(2)">Back</button></div>
+        <div class="inline final"><button class="next" (click)="signup()" type="submit" [disabled]="!signupFormGroup2.valid && !signupFormGroup.valid">Next</button></div>
+        <br>
+        <ng-container *ngIf="signupFormGroup2.controls.password.touched">
+        <span *ngIf="signupFormGroup2.controls.password.hasError('minlength')">
+            Password is not big enough
+        </span>
+        <br *ngIf="signupFormGroup2.controls.password.errors?.passwordStrength">
+        <span *ngIf="signupFormGroup2.controls.password.errors?.passwordStrength">
+            Password is not strength enough
+        </span>
+        <br *ngIf="signupFormGroup2.controls.password2.errors?.mismatch">
+        </ng-container>
+        <span *ngIf="signupFormGroup2.controls.password2.touched && signupFormGroup2.controls.password2.errors?.mismatch || signupFormGroup2.controls.password.errors?.mismatch">
+            Password and Confirm Password doesn't match
+        </span>
+    </fieldset>
+    <fieldset class="section" [className]="stepEnabled(4) ? 'is-active' : ''" *ngIf="stepEnabled(4)">
+        <h3>{{ (errorMessage === '') ? 'Account Created' : 'Sorry! Account not Created! =(' }} </h3>
+        <p>{{ (errorMessage === '') ? 'Your account has now been created.' : 'We are sorry for this, but something went wrong.' }}</p>
+        <p *ngIf="errorMessage === ''"></p>
+        <p *ngIf="errorMessage === ''">Welcome to Harness Feature Flags Demo!</p>
+        <p *ngIf="errorMessage === ''">Your username: {{ user.username }}</p>
+        <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
+        <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
+        <div class="inline"><button class="previous" (click)="next(1)" *ngIf="errorMessage != ''">Back</button></div>
+        <div routerLink="/login" class="button" *ngIf="errorMessage === ''" >Sign in</div>
+    </fieldset>
+    </form>
+    
+</div>
+</div>
