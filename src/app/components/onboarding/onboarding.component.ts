@@ -102,6 +102,66 @@ import { Repository } from 'src/app/models/repository.model';
       
     }
 
+    findInputVariables(yaml: string){
+      
+      if (yaml != undefined) {
+        let variables = /(variables:.*\n([\s]+- name: ([a-zA-Z_]+)\n[\s]+type: ([a-zA-Z]+)\n[\s]+value: (<\+input>))+)/g
+        let variablesInput = /(\n((.*?)- name: ([a-zA-Z_]+)\n[\s]+type: ([a-zA-Z]+)\n[\s]+value: (<\+input>)))/g
+        let variablesInputDetail = /(\n)?(.*?)- name: ([a-zA-Z_]+)\n[\s]+type: ([a-zA-Z]+)\n[\s]+value: (<\+input>)/i
+        let yamlWithoutVariables = yaml.replace(variables, "");
+        let regexpMaster = /([A-Za-z]+: \<\+input\>)/g;
+        let regexpChild = /([A-Za-z]+): (\<\+input\>)/;
+        console.log("yaml to parse:\n"+yamlWithoutVariables)
+          let result = yamlWithoutVariables.match(regexpMaster)!;
+          console.log("yaml parsed:\n"+result)
+          if (result != null && result !== undefined) {
+            result.forEach(function (value) {
+              let resultChild = value.match(regexpChild)!;
+              console.log("child parsed:\n"+resultChild)
+              let inputName = resultChild[1]
+              let inputValue = resultChild[2]
+              alert("Name: "+inputName + " value: "+inputValue); // <+input> 1
+              console.log(value);
+            });
+          }
+          let result2 = yaml.match(variables)!;
+          console.log("yaml parsed:\n"+result2)
+          if (result2 != null && result2 !== undefined) {
+            result2.forEach(function (value) {
+              let result3 = value.match(variablesInput)!;
+              
+              if (result3 != null && result3 !== undefined) {
+                result3?.forEach(function (value2) {
+                  console.log("ForEach Child "+value2);
+                  let resultChild = value2.match(variablesInputDetail)!;
+                  if (resultChild != null && resultChild !== undefined) {
+                    console.log("child variable parsed:\n"+resultChild[0])
+                    let inputName = resultChild[3]
+                      let inputType = resultChild[4]
+                      let inputValue = resultChild[5]
+                      alert("Name: "+inputName + " type: "+ inputType + " value: "+inputValue); // <+input> 1
+                      let input = '<input formControlName="'+inputName+'"  class="form-control" type="text" name="'+inputName+'" id="variable_'+inputName+'" placeholder="'+inputName+'" >'
+                    /* resultChild?.forEach(function (value3) {
+                    console.log("child child variable parsed:\n"+value3[0])
+                      
+                    
+                    }); */
+                  }
+                  
+                });
+              }
+            });
+            
+            
+          }
+      }
+      else{
+        console.log("Yaml undefined")
+      }
+      
+      
+    }
+
     setStep(step: number){
 
       this.activeStep = step;
@@ -122,11 +182,13 @@ import { Repository } from 'src/app/models/repository.model';
       //console.log(this.directivetemplate); // 
       //console.log(this.directiverepository); // 
       
-      if ( step === 2) {
-        this.currentRepository = this.directiverepository?.currentRepository!; //  */
-      }
-      if ( step === 3){
-        this.currentTemplate = this.directivetemplate?.currentTemplate!; // 
+      /* if ( step === 2) {
+        this.currentRepository = this.directiverepository?.currentRepository!; //  
+      } */
+      if ( step === 4){
+        //this.currentTemplate = this.directivetemplate?.currentTemplate!; // 
+        console.log("Diego test")
+        this.findInputVariables(this.currentTemplate?.yaml!)
       }
       
       
