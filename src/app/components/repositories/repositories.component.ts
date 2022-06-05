@@ -27,6 +27,13 @@ import { AppService } from 'src/app/app.service';
     isDesc: boolean = false;
     column: string = 'name';
 
+
+    //Pagination
+    page = 1;
+    count = 0;
+    pageSize = 5;
+    pageSizes = [5, 10, 20];
+
     constructor(private app: AppService,private repositoryService: RepositoryService, private ff: FFService) { 
       console.log("App Starting")
 
@@ -36,6 +43,21 @@ import { AppService } from 'src/app/app.service';
     }
 
     searchEnabled(){ return false }
+
+    getRequestParams(searchName: string, page: number, pageSize: number): any {
+      // tslint:disable-next-line:prefer-const
+      let params: any = {};
+      if (searchName) {
+        params[`name`] = searchName;
+      }
+      if (page) {
+        params[`page`] = page - 1;
+      }
+      if (pageSize) {
+        params[`size`] = pageSize;
+      }
+      return params;
+    }
 
     discoverRepositories(){ 
       this.loading = true;
@@ -103,13 +125,18 @@ import { AppService } from 'src/app/app.service';
     authenticated() { return this.app.authenticated; }
 
     retrieveRepositories(): void {
-      this.repositoryService.getAll()
+      const params = this.getRequestParams(this.name, this.page, this.pageSize);
+      this.repositoryService.getAllParams(params)
         .subscribe(
           data => {
-            this.repositories = data;
+            const { repositories, totalItems } = data;
+
+            this.repositories = repositories;
+            this.count = totalItems;
             console.log("checking repositories");
             console.log(data);
             console.log(this.repositories);
+            console.log(this.count);
             
             if (data === undefined) {
               this.repositoryEmpty = true;
@@ -126,7 +153,17 @@ import { AppService } from 'src/app/app.service';
           
           });
     }
-
+    // pagination
+    handlePageChange(event: number): void {
+      this.page = event;
+      this.retrieveRepositories();
+    }
+    handlePageSizeChange(event: any): void {
+      this.pageSize = event.target.value;
+      this.page = 1;
+      this.retrieveRepositories();
+    }
+    // end pagination
     refreshList(): void {
       this.retrieveRepositories();
       this.currentRepository = undefined;

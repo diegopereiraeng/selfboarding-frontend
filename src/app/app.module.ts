@@ -19,7 +19,7 @@ import { AdminComponent } from './components/admin/admin.component';
 import { TemplateListComponent } from './components/templates/template-list.component';
 import { OnboardingComponent } from './components/onboarding/onboarding.component';
 import { RepositoriesComponent } from './components/repositories/repositories.component';
-
+import { NgxPaginationModule } from 'ngx-pagination'; // <-- import the module
 
 
 @NgModule({
@@ -44,7 +44,8 @@ import { RepositoriesComponent } from './components/repositories/repositories.co
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgbModule
+    NgbModule,
+    NgxPaginationModule
   ],
   providers: [AppService],
   bootstrap: [AppComponent]

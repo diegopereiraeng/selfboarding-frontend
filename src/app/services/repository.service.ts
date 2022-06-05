@@ -24,6 +24,10 @@ export class RepositoryService {
     return this.http.get<Repository[]>(baseUrl,{headers: new HttpHeaders({ authorization : `${this.app.getToken()}` || '' })});
   }
 
+  getAllParams(params: any): Observable<any> {
+    return this.http.get<any>(baseUrl+"paging",{headers: new HttpHeaders({ authorization : `${this.app.getToken()}` || '' }),params: params});
+  }
+
   get(id: any): Observable<Repository> {
     return this.http.get(`${baseUrl}/${id}`,{headers: new HttpHeaders({ authorization : `${this.app.getToken()}` || '' })});
   }
