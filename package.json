@@ -31,6 +31,7 @@
     "bootstrap": "^4.5.0",
     "dotenv": "^16.0.1",
     "jquery": "^3.6.0",
+    "ngx-pagination": "^5.1.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
