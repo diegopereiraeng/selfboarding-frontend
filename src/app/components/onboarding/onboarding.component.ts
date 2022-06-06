@@ -3,11 +3,16 @@ import { Template } from 'src/app/models/template.model';
 import { TemplateService } from 'src/app/services/template.service';
 import { FFService } from 'src/app/services/ff.service';
 import { AppService } from 'src/app/app.service';
-import {FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn, FormGroup } from '@angular/forms';
+import {FormBuilder, Validators, FormControl, ValidationErrors, ValidatorFn, FormGroup } from '@angular/forms';
 import { TemplateListComponent } from 'src/app/components/templates/template-list.component';
 import { RepositoriesComponent } from 'src/app/components/repositories/repositories.component';
 import { Repository } from 'src/app/models/repository.model';
 
+export interface inputVariable {
+  name: string; 
+  type: string; 
+  value: string;
+}
 
 @Component({
     selector: 'app-onboarding',
@@ -66,8 +71,32 @@ import { Repository } from 'src/app/models/repository.model';
     isDesc: boolean = false;
     column: string = 'name';
 
+
+    //Dynamic variables
+    templateVariables: inputVariable[] = new Array<inputVariable>();
+    public variablesForm: FormGroup;
+    unsubcribe: any
+
+    //end Dynamic variables
+
+    
+
     constructor(private app: AppService,private templateService: TemplateService, private ff: FFService,private formBuilder: FormBuilder) { 
       console.log("App Starting")
+
+
+      //Dynamic variables
+      
+      this.variablesForm = new FormGroup({
+
+        fields: new FormControl(JSON.stringify(this.templateVariables.map(variable => variable.name)))
+      })
+      this.unsubcribe = this.variablesForm.valueChanges.subscribe((update) => {
+        console.log(update);
+        this.templateVariables = JSON.parse(update.fields);
+      });
+
+      // end dynamic variables
 
       this.OnboardingGroup = this.formBuilder.group({
         r1: ['',[Validators.required]]
@@ -87,6 +116,8 @@ import { Repository } from 'src/app/models/repository.model';
 
       });
 
+      
+
       this.OnboardingFormGroup2 = this.formBuilder.group({
           // *********************************************
           // O valor padrão deste formControl será vazio
@@ -102,6 +133,16 @@ import { Repository } from 'src/app/models/repository.model';
       
     }
 
+    toFormGroup(inputVariables: inputVariable[] ) {
+      const group: any = {};
+  
+      inputVariables.forEach(inputVariable => {
+        group[inputVariable.name] = new FormControl(inputVariable.value || '', Validators.required);
+        
+      });
+      return new FormGroup(group);
+    }
+
     findInputVariables(yaml: string){
       
       if (yaml != undefined) {
@@ -112,45 +153,56 @@ import { Repository } from 'src/app/models/repository.model';
         let regexpMaster = /([A-Za-z]+: \<\+input\>)/g;
         let regexpChild = /([A-Za-z]+): (\<\+input\>)/;
         console.log("yaml to parse:\n"+yamlWithoutVariables)
-          let result = yamlWithoutVariables.match(regexpMaster)!;
-          console.log("yaml parsed:\n"+result)
-          if (result != null && result !== undefined) {
-            result.forEach(function (value) {
-              let resultChild = value.match(regexpChild)!;
-              console.log("child parsed:\n"+resultChild)
-              let inputName = resultChild[1]
-              let inputValue = resultChild[2]
-              alert("Name: "+inputName + " value: "+inputValue); // <+input> 1
-              console.log(value);
-            });
-          }
-          let result2 = yaml.match(variables)!;
-          console.log("yaml parsed:\n"+result2)
-          if (result2 != null && result2 !== undefined) {
-            result2.forEach(function (value) {
-              let result3 = value.match(variablesInput)!;
-              
-              if (result3 != null && result3 !== undefined) {
-                result3?.forEach(function (value2) {
-                  console.log("ForEach Child "+value2);
-                  let resultChild = value2.match(variablesInputDetail)!;
-                  if (resultChild != null && resultChild !== undefined) {
-                    console.log("child variable parsed:\n"+resultChild[0])
-                    let inputName = resultChild[3]
-                      let inputType = resultChild[4]
-                      let inputValue = resultChild[5]
-                      alert("Name: "+inputName + " type: "+ inputType + " value: "+inputValue); // <+input> 1
-                      let input = '<input formControlName="'+inputName+'"  class="form-control" type="text" name="'+inputName+'" id="variable_'+inputName+'" placeholder="'+inputName+'" >'
-                    /* resultChild?.forEach(function (value3) {
-                    console.log("child child variable parsed:\n"+value3[0])
-                      
-                    
-                    }); */
-                  }
+        let result = yamlWithoutVariables.match(regexpMaster)!;
+        console.log("yaml parsed:\n"+result)
+        this.templateVariables = new Array<inputVariable>();
+        if (result != null && result !== undefined) {
+          const selfThis = this; // 👈️ closure of this
+          result.forEach(function (value) {
+            let resultChild = value.match(regexpChild)!;
+            console.log("child parsed:\n"+resultChild)
+            let inputName = resultChild[1]
+            let inputValue = resultChild[2]
+            //alert("Name: "+inputName + " value: "+inputValue); // <+input> 1
+            console.log(value);
+            //let input = '<input formControlName="'+inputName+'"  class="form-control" type="text" name="'+inputName+'" id="variable_'+inputName+'" placeholder="'+inputName+'" >'
+            let inputVariable: inputVariable = {name: inputName, value: inputValue, type: "String" } as inputVariable
+            selfThis.templateVariables.push(inputVariable)
+          });
+          this.templateVariables = selfThis.templateVariables
+        }
+        let result2 = yaml.match(variables)!;
+        console.log("yaml parsed:\n"+result2)
+        if (result2 != null && result2 !== undefined) {
+          const selfThis = this; // 👈️ closure of this
+          result2.forEach(function (value) {
+            let result3 = value.match(variablesInput)!;
+            
+            if (result3 != null && result3 !== undefined) {
+              result3?.forEach(function (value2) {
+                console.log("ForEach Child "+value2);
+                let resultChild = value2.match(variablesInputDetail)!;
+                if (resultChild != null && resultChild !== undefined) {
+                  console.log("child variable parsed:\n"+resultChild[0])
                   
-                });
-              }
-            });
+                  let inputName = resultChild[3]
+                    let inputType = resultChild[4]
+                    let inputValue = resultChild[5]
+                    //alert("Name: "+inputName + " type: "+ inputType + " value: "+inputValue); // <+input> 1
+                    //let input = '<input formControlName="'+inputName+'"  class="form-control" type="text" name="'+inputName+'" id="variable_'+inputName+'" placeholder="'+inputName+'" >'
+                    let inputVariable: inputVariable = {name: inputName, value: inputValue, type: inputType } as inputVariable
+                    selfThis.templateVariables.push(inputVariable)
+                    //this.templateVariables = []//.push(input)
+                  /* resultChild?.forEach(function (value3) {
+                  console.log("child child variable parsed:\n"+value3[0])
+                    
+                  
+                  }); */
+                }
+                
+              });
+            }
+          });
             
             
           }
@@ -158,7 +210,7 @@ import { Repository } from 'src/app/models/repository.model';
       else{
         console.log("Yaml undefined")
       }
-      
+      console.log(this.templateVariables)
       
     }
 
@@ -189,6 +241,20 @@ import { Repository } from 'src/app/models/repository.model';
         //this.currentTemplate = this.directivetemplate?.currentTemplate!; // 
         console.log("Diego test")
         this.findInputVariables(this.currentTemplate?.yaml!)
+        this.variablesForm = this.toFormGroup(this.templateVariables)
+        console.log(JSON.stringify(this.templateVariables.map(variable => variable.name)))
+        console.log(this.templateVariables.map(variable => variable.name))
+      }
+      if (step === 5) {
+        if (this.currentTemplate?.yaml != undefined && this.currentRepository?.name != undefined ) {
+          let templateIndented = ''
+          let template = this.currentTemplate.yaml.split(/\r?\n/).forEach(line =>  {
+            templateIndented += "    "+line+"\n"
+          });
+          let pipeline = "pipeline:\n    name: "+this.currentRepository?.name+"\n    identifier: "+this.currentRepository?.name+"\n"+templateIndented;
+          console.log(pipeline);
+        }
+        
       }
       
       

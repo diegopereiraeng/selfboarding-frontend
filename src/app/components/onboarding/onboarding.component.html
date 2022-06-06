@@ -5,6 +5,8 @@
     <li [className]="stepEnabled(1) ? 'is-active' : ''">Step 1</li>
     <li [className]="stepEnabled(2) ? 'is-active' : ''">Step 2</li>
     <li [className]="stepEnabled(3) ? 'is-active' : ''">Step 3</li>
+    <li [className]="stepEnabled(4) ? 'is-active' : ''">Step 4</li>
+    <li [className]="stepEnabled(5) ? 'is-active' : ''">Onboarded</li>
     </ul>
     <form class="form-wrapper" >
         <input *ngIf="stepEnabled(2) || stepEnabled(3)" name="currentRepository" [(ngModel)]="currentRepository?.name!" class="form-control-plaintext form-control-sm" type="text" placeholder="Select a Repository" readonly>
@@ -26,18 +28,18 @@
 
     </fieldset>
     </form>
-    <form class="form-wrapper" [formGroup]="OnboardingFormGroup2" *ngIf="stepEnabled(2) || stepEnabled(3) || stepEnabled(4)">
+    <form class="form-wrapper" [formGroup]="OnboardingFormGroup2" *ngIf="stepEnabled(2) || stepEnabled(3) || stepEnabled(5)">
 
     <fieldset class="section" [className]="stepEnabled(3) ? 'is-active' : ''" *ngIf="stepEnabled(3)">
         <h3>Select a Template</h3>
         <app-template-list></app-template-list>
-        <button class="m-3 btn btn-sm btn-success"  (click)="next(4)">
-            Onboarding Harnesss
-        </button>
+        <div class="inline"><button class="previous" (click)="next(2)">Back</button></div>
+            <div class="inline back"><button class="next" (click)="next(4)" >Next</button></div>
         <br>
         
     </fieldset>
-    <fieldset class="section" [className]="stepEnabled(4) ? 'is-active' : ''" *ngIf="stepEnabled(4)">
+    
+    <fieldset class="section" [className]="stepEnabled(5) ? 'is-active' : ''" *ngIf="stepEnabled(5)">
         <h3>{{ (errorMessage === '') ? 'APP Onboarded' : 'Sorry! We coudn\'t onboard your app! =(' }} </h3>
         <p>{{ (errorMessage === '') ? 'Your repository has been onboarded.' : 'We are sorry for this, but something went wrong.' }}</p>
         <p *ngIf="errorMessage === ''"></p>
@@ -47,6 +49,44 @@
         <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
         <div class="inline"><button class="previous" (click)="next(1)" *ngIf="errorMessage != ''">Back</button></div>
         <div routerLink="/login" class="button" *ngIf="errorMessage === ''" >Go to Harness</div>
+    </fieldset>
+    </form>
+    <form class="form-wrapper" [formGroup]="variablesForm" *ngIf="stepEnabled(4)">
+    <fieldset class="section" [className]="stepEnabled(4) ? 'is-active' : ''" *ngIf="stepEnabled(4)">
+        <div *ngIf="templateVariables != []" >
+            <table class="center table table-sm table-borderless .table-hover">
+                <!--Table head-->
+                <thead>
+                    <tr>
+                        <!-- <th scope="row">#</th> -->
+                        <th class="th-lg var-label"><a>Template Variables</a></th>
+                        <th class="th-lg"><a href="">Value</a></th>
+                    </tr>
+                </thead>
+                <!--Table head-->
+                <!--Table body-->
+                <tbody>
+                    <tr *ngFor="let input of templateVariables!; let i = index" [class.active]="i == currentIndex">
+                        <!-- <th scope="row">1</th> -->
+                        <td class="var-label">{{input?.name}}:</td>
+                        <td><input [formControlName]="input?.name!" class="form-control inline back" type="text" [name]="input?.name" placeholder="<+input>" [id]="'variable_'+input?.name"></td>
+                    </tr>
+            
+                </tbody>
+                <!--Table body-->
+            </table>
+            <button class="btn button"  (click)="next(5)">
+                Onboarding Harnesss
+            </button>
+            <!-- <div *ngFor="let input of templateVariables!; let i = index" [class.active]="i == currentIndex" class="parent-variables">
+                <div class="inline">
+                    <label>{{input?.name}}:</label>
+                </div> 
+                <div class="inline">
+                    <input [formControlName]="input?.name!"  class="form-control inline back" type="text" [name]="input?.name" value="{{input?.value}}" [id]="'variable_'+input?.name" [placeholder]="input?.name" >
+                </div>
+            </div> -->
+        </div>
     </fieldset>
     </form>
     <form class="form-wrapper" [formGroup]="OnboardingFormGroup">

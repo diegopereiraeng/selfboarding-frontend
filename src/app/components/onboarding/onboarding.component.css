@@ -213,10 +213,18 @@ fieldset{
   
 }
 
+
+
 div.inline { display: inline; }
 
 .back{ 
   margin-left: 35%;
+}
+
+.var-label{ 
+  text-align: right;
+  padding-right: 5px;
+  vertical-align:middle;
 }
 
 .final{ 
@@ -283,12 +291,12 @@ span {
 
 .form-wrapper input[type="text"],
 .form-wrapper input[type="password"]{
-  display: block;
+  display: inline;
   padding: 10px;
-  margin: 10px auto;
+  margin: 10px auto; 
   background-color: #f1f1f1;
   border: none;
-  width: 50%;
+  width: 80%;
   outline: none;
   font-size: 14px !important;
   font-family: 'Open Sans', sans-serif !important;
@@ -343,3 +351,4 @@ span {
 .form-wrapper input[type="radio"]:checked + label h4{
   color: #3498db;
 }
+
