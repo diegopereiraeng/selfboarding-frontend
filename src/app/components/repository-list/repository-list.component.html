@@ -1,4 +1,4 @@
-<main class="l-main" *ngIf="!loading && currentMsgToChild1 === ''">
+<main class="l-main" *ngIf="!loading && currentMsgToChild1 === ''" [hidden]="!authenticated()">
   <div class="content-wrapper content-wrapper--with-bg">
       
       <div class="page-content">

@@ -16,6 +16,7 @@ export class Template {
     tags?: object
     enabled?: Boolean
     yaml?: string
+    yamlInput?: string
     versionLabel?: string
     templateEntityType?: string
     templateScope?: string

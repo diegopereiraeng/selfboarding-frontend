@@ -7,6 +7,9 @@ import {FormBuilder, Validators, FormControl, ValidationErrors, ValidatorFn, For
 import { TemplateListComponent } from 'src/app/components/templates/template-list.component';
 import { RepositoriesComponent } from 'src/app/components/repositories/repositories.component';
 import { Repository } from 'src/app/models/repository.model';
+import { OnboardingService } from '../../services/onboarding.service';
+
+
 
 export interface inputVariable {
   name: string; 
@@ -14,10 +17,14 @@ export interface inputVariable {
   value: string;
 }
 
+export interface onboardResult {
+  url: string; 
+}
+
 @Component({
     selector: 'app-onboarding',
     templateUrl: './onboarding.component.html',
-    styleUrls: ['./onboarding.component.css']
+    styleUrls: ['./onboarding.component.css', "../../shared/loading-div.shared.css"]
   })
   export class OnboardingComponent implements OnInit, AfterViewInit {
 
@@ -39,6 +46,10 @@ export interface inputVariable {
       console.log(`[${eventType}]\n staticName: ${this.directivetemplate}, name value: "${this.directivetemplate?.currentTemplate?.name}"\n nonStaticName: ${this.directiverepository}, name value: "${this.directiverepository?.currentRepository?.name}"\n`);
     }
 
+    // harness onboarding
+    harnessLink = "https://app.harness.io/ng/#/account/Io9SR1H7TtGBq9LVyJVB2w/ci/orgs/default/projects/"
+    harnessOnboarded = "";
+
     // Test messages
     name = 'Child 1';
     @Input() msgFromParent1: string = '';
@@ -57,7 +68,9 @@ export interface inputVariable {
     OnboardingFormGroup: FormGroup;
     OnboardingGroup: FormGroup;
     OnboardingFormGroup2: FormGroup;
-
+    onboardLink = { "url": "/onboarding" } as onboardResult;
+    currentPipeline: string = '';
+    
     currentRepository?: Repository;
     templates?: Template[];
     currentTemplate?: Template;
@@ -81,7 +94,7 @@ export interface inputVariable {
 
     
 
-    constructor(private app: AppService,private templateService: TemplateService, private ff: FFService,private formBuilder: FormBuilder) { 
+    constructor(private app: AppService,private templateService: TemplateService, private ff: FFService,private formBuilder: FormBuilder, private onboardingService: OnboardingService) { 
       console.log("App Starting")
 
 
@@ -246,13 +259,33 @@ export interface inputVariable {
         console.log(this.templateVariables.map(variable => variable.name))
       }
       if (step === 5) {
-        if (this.currentTemplate?.yaml != undefined && this.currentRepository?.name != undefined ) {
+        if (this.currentTemplate?.yamlInput != undefined && this.currentRepository?.name != undefined ) {
           let templateIndented = ''
-          let template = this.currentTemplate.yaml.split(/\r?\n/).forEach(line =>  {
-            templateIndented += "    "+line+"\n"
+          let template = this.currentTemplate.yamlInput.split(/\r?\n/).forEach(line =>  {
+            templateIndented += "      "+line+"\n"
           });
-          let pipeline = "pipeline:\n    name: "+this.currentRepository?.name+"\n    identifier: "+this.currentRepository?.name+"\n"+templateIndented;
-          console.log(pipeline);
+          var reSpecialCharacter = /[ !@#$%^&*()+\-=\[\]{};\':"\\|,.<>\/?]/gi;
+          this.currentPipeline = "pipeline:\n  name: "+this.currentRepository?.name+"\n  identifier: "+this.currentRepository?.name.replace(reSpecialCharacter,"_")+"\n"+"  projectIdentifier: "+this.currentRepository?.name.replace(reSpecialCharacter,"_")+"\n  orgIdentifier: default\n" +"  template:\n    templateRef: account."+this.currentTemplate?.identifier+"\n    versionLabel: "+this.currentTemplate?.versionLabel+"\n    templateInputs:\n"+templateIndented;
+          console.log(this.currentPipeline);
+          console.log("Starting bonboarding...");
+          
+          this.onboardingService.onboarding(this.currentPipeline,this.currentRepository?.name.replace(reSpecialCharacter,"_")).subscribe(data => {
+            
+            let onboardingResult = data;
+            this.harnessOnboarded = "onboarded"
+            this.errorMessage = "";
+            this.onboardLink = onboardingResult as onboardResult;
+            console.log("Onboard Result:\n"+ onboardingResult.url);
+          },
+          err => {
+            console.log(err);
+            this.harnessOnboarded = "failed"
+            this.errorMessage = "Failed to Create pipeline";
+            console.log(err["message"]);
+          }
+          );
+          this.harnessOnboarded = "loading"
+          
         }
         
       }

@@ -1,5 +1,5 @@
 
-<div class="container">
+<div class="container" [hidden]="!authenticated()">
   <div class="wrapper">
     <ul class="steps">
     <li [className]="stepEnabled(1) ? 'is-active' : ''">Step 1</li>
@@ -39,16 +39,23 @@
         
     </fieldset>
     
+
     <fieldset class="section" [className]="stepEnabled(5) ? 'is-active' : ''" *ngIf="stepEnabled(5)">
-        <h3>{{ (errorMessage === '') ? 'APP Onboarded' : 'Sorry! We coudn\'t onboard your app! =(' }} </h3>
-        <p>{{ (errorMessage === '') ? 'Your repository has been onboarded.' : 'We are sorry for this, but something went wrong.' }}</p>
-        <p *ngIf="errorMessage === ''"></p>
-        <p *ngIf="errorMessage === ''">Welcome to Harness !</p>
-    
-        <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
-        <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
-        <div class="inline"><button class="previous" (click)="next(1)" *ngIf="errorMessage != ''">Back</button></div>
-        <div routerLink="/login" class="button" *ngIf="errorMessage === ''" >Go to Harness</div>
+        <div *ngIf="harnessOnboarded === 'onboarded' || harnessOnboarded === 'failed'">
+            <h3>{{ (errorMessage === '') ? 'APP Onboarded' : 'Sorry! We coudn\'t onboard your app! =(' }} </h3>
+            <p>{{ (errorMessage === '') ? 'Your repository has been onboarded.' : 'We are sorry for this, but something went wrong.' }}</p>
+            <p *ngIf="errorMessage === ''"></p>
+            <p *ngIf="errorMessage === ''">Welcome to Harness !</p>
+        
+            <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
+            
+            <div class="inline"><button class="previous" (click)="next(1)" *ngIf="errorMessage != ''">Back</button></div>
+            <div [routerLink]="onboardLink.url" class="button" *ngIf="errorMessage === ''" >Go to Harness</div>
+        </div>
+        <div class="load-4" *ngIf="harnessOnboarded === 'loading'">
+            <p>Onboarding your app, please wait..</p>
+            <div class="ring-1"></div>
+        </div>
     </fieldset>
     </form>
     <form class="form-wrapper" [formGroup]="variablesForm" *ngIf="stepEnabled(4)">
@@ -75,9 +82,10 @@
                 </tbody>
                 <!--Table body-->
             </table>
-            <button class="btn button"  (click)="next(5)">
+            <div class="inline"><button class="previous" (click)="next(1)">Back</button></div>
+            <div class="inline back"><button class="btn button"  (click)="next(5)">
                 Onboarding Harnesss
-            </button>
+            </button></div>
             <!-- <div *ngFor="let input of templateVariables!; let i = index" [class.active]="i == currentIndex" class="parent-variables">
                 <div class="inline">
                     <label>{{input?.name}}:</label>
@@ -107,9 +115,9 @@
     </div>
 </div>
 
-<div class="list row" [hidden]="!authenticated()">
+<!-- <div class="list row" [hidden]="!authenticated()">
     {{ msgFromParent1 }}
-</div>
+</div> -->
 <div [hidden]="authenticated()">
 	<p>Login to see Tutorials</p>
 </div>
