@@ -21,7 +21,7 @@ export class OnboardingService {
   
 
 
-  onboarding(data: any, name:string, repositoryName:string): Observable<any> {
-    return this.http.post<any>(`${baseUrl}/onboarding/${name}?repositoryName=${repositoryName}`,data,{headers: new HttpHeaders({ authorization : `${this.app.getToken()}` || '' })});
+  onboarding(data: any, name:string, repositoryName:string, templateID:string, project:string, org:string, pipelineNameParam:string): Observable<any> {
+    return this.http.post<any>(`${baseUrl}/onboarding/${name}?repositoryName=${repositoryName}&templateID=${templateID}&project=${project}&org=${org}&pipelineNameParam=${pipelineNameParam}`,data,{headers: new HttpHeaders({ authorization : `${this.app.getToken()}` || '' })});
   }
 }

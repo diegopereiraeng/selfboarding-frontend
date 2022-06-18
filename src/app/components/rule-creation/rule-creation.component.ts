@@ -153,17 +153,14 @@ export interface onboardResult {
           // e os demais vazio
           // *********************************************
           name: ['', [Validators.required]],
-          description: ['', [Validators.required]],
+          description: ['', ],
           repoField: ['', [Validators.required]],
           clause: ['', [Validators.required]],
           value: ['', [Validators.required]],
           weight: ['', [Validators.required]],
           organization: ['', [Validators.required]],
           project: ['', [Validators.required]],
-          select: ['', [
-              Validators.required,
-            
-          ]]
+          
 
           
 
@@ -333,7 +330,7 @@ export interface onboardResult {
 
     checkSelectedOption(): boolean {
       
-      if (this.activeStep === 2) {
+      if (this.activeStep === 1) {
         if (this.currentRepository?.name != undefined) {
           this.currentRepositorySelected = true;
           

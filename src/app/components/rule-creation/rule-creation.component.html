@@ -118,7 +118,7 @@
             </tbody>
         </table>
         <p></p>
-        <div class="inline back"><button class="next" (click)="next(2)" >Next</button></div>
+        <div class="inline back"><button class="next" (click)="next(2)" [disabled]="selectedTemplates?.length! == 0 || !RuleFormGroup.valid">Next</button></div>
 
     </fieldset>
     </form>
@@ -167,7 +167,8 @@
                                 <!--Table body-->
                             </table>
                             <div class="inline">
-                                <button class="previous" (click)="nextTemplate(i-1)" >Back</button>
+                                <button class="previous" (click)="next(1)" *ngIf="0 == i">Back</button>
+                                <button class="previous" (click)="nextTemplate(i-1)" *ngIf="0 != i">Back</button>
                             </div>
                             <div class="inline back">
                                 <button class="btn button"  (click)="nextTemplate(i+1)" *ngIf="i+1 != selectedTemplates.length">

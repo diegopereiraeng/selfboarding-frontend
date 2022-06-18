@@ -298,7 +298,7 @@ export interface onboardResult {
           console.log(this.currentPipeline);
           console.log("Starting bonboarding...");
           
-          this.onboardingService.onboarding(this.currentPipeline,this.currentRepository?.name.replace(reSpecialCharacter,"_"),this.currentRepository?.name).subscribe(data => {
+          this.onboardingService.onboarding(this.currentPipeline,this.currentRepository?.name.replace(reSpecialCharacter,"_"),this.currentRepository?.name,this.currentTemplate?.identifier!,this.currentRepository?.name.replace(reSpecialCharacter,"_"),"default",this.currentTemplate?.identifier!).subscribe(data => {
             
             let onboardingResult = data;
             this.harnessOnboarded = "onboarded"

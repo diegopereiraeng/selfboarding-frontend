@@ -15,6 +15,7 @@ resources:
     cpu: 20m
 
 virtualPath: <+service.name>
+version: <+artifact.tag>
 
 image: <+artifact.image>
 imagePolicy: Always
@@ -34,3 +35,9 @@ serviceType: LoadBalancer
 # targetPort is where application is listening on inside the container.
 servicePort: 80
 serviceTargetPort: 80
+
+env:
+  config:
+    DD_ENV: <+env.name>
+    DD_SERVICE: <+service.name>
+    DD_VERSION: <+artifact.tag>
