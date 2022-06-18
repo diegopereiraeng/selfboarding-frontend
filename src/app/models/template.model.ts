@@ -8,6 +8,16 @@ import { UserBackendProfile } from './userBackendProfile.model'; */
     email: string; 
 } */
 
+export interface inputVariable {
+    name: string; 
+    type: string; 
+    value: string;
+}
+export interface inputTemplates {
+    id: string; 
+    inputVariables: inputVariable[]; 
+}
+
 export class Template {
     accountId?: string
     identifier?: string
@@ -26,4 +36,5 @@ export class Template {
     stableTemplate?: boolean
     gitDetails?: object
     entityValidityDetails?: object
+    inputVariables?: inputVariable[]
 }

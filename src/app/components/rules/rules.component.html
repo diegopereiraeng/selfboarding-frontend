@@ -1,4 +1,4 @@
-<main [hidden]="!authenticated() && !repositoryEnabled()">
+<main [hidden]="!authenticated() && !ruleEnabled()">
     
     <!--MDB Tables-->
     <div class="container mt-4 master-container">
@@ -9,7 +9,7 @@
                 <div class="row">
                     <!-- Grid column -->
                     <div class="col-md-12">
-                        <h2 class="py-3 text-center font-bold font-up blue-text">Repositories</h2>
+                        <h2 class="py-3 text-center font-bold font-up blue-text">Rules</h2>
                     </div>
                     <!-- Grid column -->
                 </div>
@@ -32,6 +32,8 @@
                             </div>
                     </div>
                 </div>
+                <button type="button" routerLink="/rule-creation" class="btn btn-success btn-sm">Create New Rule</button>
+                <p></p>
                 <!-- Grid row -->
                 <!--Table-->
                 <table class="center table table-hover  mb-0">
@@ -40,25 +42,25 @@
                         <tr>
                             <!-- <th scope="row">#</th> -->
                             <th class="th-lg"><a>Name</a></th>
-                            <th class="th-lg"><a href="">Language</a></th>
-                            <th class="th-lg"><a href="">Branch</a></th>
-                            <th class="th-lg"><a href="">Onboarded</a></th>
+                            <th class="th-lg"><a href="">Field</a></th>
+                            <th class="th-lg"><a href="">Clause</a></th>
+                            <th class="th-lg"><a href="">Value</a></th>
                         </tr>
                     </thead>
                     <!--Table head-->
                     <!--Table body-->
                     <tbody>
-                        <tr *ngFor="let repository of repositories! | paginate : {
+                        <tr *ngFor="let rule of rules! | paginate : {
                             itemsPerPage: pageSize,
                             currentPage: page,
                             totalItems: count
                             }; let i = index" [class.active]="i == currentIndex"
-                        (click)="setActiveRepository(repository, i)">
+                        (click)="setActiveRule(rule, i)">
                             <!-- <th scope="row">1</th> -->
-                            <td>{{ repository.name }}</td>
-                            <td>{{ repository.language }}</td>
-                            <td>{{ repository.branch }}</td>
-                            <td>{{ repository.enabled }}</td>
+                            <td>{{ rule.name }}</td>
+                            <td>{{ rule.field }}</td>
+                            <td>{{ rule.clause }}</td>
+                            <td>{{ rule.value }}</td>
                         </tr>
                 
                     </tbody>

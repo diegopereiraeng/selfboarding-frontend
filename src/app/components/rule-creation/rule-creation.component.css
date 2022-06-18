@@ -26,12 +26,22 @@ p{
   margin-bottom: 1.7rem;
 }
 form input{
-  width: 85%;
+
   outline: none;
   border: none;
   background: #dfe9f5;
   padding: 12px 14px;
   margin-bottom: 0px;
+  border-radius: 10px;
+}
+
+select{
+
+  outline: none;
+  border: none;
+  background: #dfe9f5;
+  padding: 7px 14px;
+
   border-radius: 10px;
 }
 
@@ -276,6 +286,7 @@ span {
   -moz-appearance: none;
   appearance: none;
   width: 10%;
+  border-radius: 10px;
 }
 
 .go-to-harness{
@@ -307,6 +318,18 @@ span {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+
+.form-wrapper select{
+  display: inline;
+  padding: 8px;
+  margin: 10px auto; 
+  background-color: #f1f1f1;
+  border: none;
+  width: 80%;
+  outline: none;
+  font-size: 14px !important;
+  font-family: 'Open Sans', sans-serif !important;
 }
 
 .form-wrapper input[type="text"],
@@ -382,3 +405,9 @@ span {
   max-width:50%
 }
 
+
+
+.middle{ 
+  vertical-align: middle;
+  display: table-cell;
+}

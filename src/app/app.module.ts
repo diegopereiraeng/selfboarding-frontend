@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+//import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -19,8 +20,12 @@ import { AdminComponent } from './components/admin/admin.component';
 import { TemplateListComponent } from './components/templates/template-list.component';
 import { OnboardingComponent } from './components/onboarding/onboarding.component';
 import { RepositoriesComponent } from './components/repositories/repositories.component';
+import { RuleCreationComponent } from './components/rule-creation/rule-creation.component';
+import { RulesComponent } from './components/rules/rules.component';
+import { TemplateSelectionComponent } from './components/template-selection/template-selection.component';
 import { NgxPaginationModule } from 'ngx-pagination'; // <-- import the module
-
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+//import { NgSelectModule } from "@ng-select/ng-select";
 
 @NgModule({
   declarations: [
@@ -36,7 +41,10 @@ import { NgxPaginationModule } from 'ngx-pagination'; // <-- import the module
     AdminComponent,
     TemplateListComponent,
     OnboardingComponent,
-    RepositoriesComponent
+    RepositoriesComponent,
+    RuleCreationComponent,
+    RulesComponent,
+    TemplateSelectionComponent
   ],
   imports: [
     BrowserModule,
@@ -45,9 +53,12 @@ import { NgxPaginationModule } from 'ngx-pagination'; // <-- import the module
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    //NgSelectModule
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [AppService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule { }

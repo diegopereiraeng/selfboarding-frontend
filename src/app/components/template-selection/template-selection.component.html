@@ -1,0 +1,14 @@
+<form [formGroup]="myForm">
+    <ng-multiselect-dropdown class="custom-font-size"
+        name="template"
+        [placeholder]="'Select Templates'"
+        [settings]="dropdownSettings2"
+        [data]="templates"
+        formControlName="template"
+        [disabled]="disabled"
+        (onSelect)="onItemSelect($event)"
+        [(ngModel)]="selectedTemplates"
+        (onDeSelect)="onItemDeSelect($event)">
+    </ng-multiselect-dropdown>
+    
+</form>

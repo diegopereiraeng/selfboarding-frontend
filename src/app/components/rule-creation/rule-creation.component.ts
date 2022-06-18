@@ -3,11 +3,12 @@ import { Template } from 'src/app/models/template.model';
 import { TemplateService } from 'src/app/services/template.service';
 import { FFService } from 'src/app/services/ff.service';
 import { AppService } from 'src/app/app.service';
-import {FormBuilder, Validators, FormControl, ValidationErrors, ValidatorFn, FormGroup } from '@angular/forms';
-import { TemplateListComponent } from 'src/app/components/templates/template-list.component';
+import {FormBuilder, Validators, FormControl, FormArray, ValidatorFn, FormGroup } from '@angular/forms';
+import { TemplateSelectionComponent } from 'src/app/components/template-selection/template-selection.component';
 import { RepositoriesComponent } from 'src/app/components/repositories/repositories.component';
 import { Repository } from 'src/app/models/repository.model';
-import { OnboardingService } from '../../services/onboarding.service';
+import { RulesService } from '../../services/rules.service';
+import { Rule } from 'src/app/models/rule.model';
 
 
 
@@ -15,6 +16,16 @@ export interface inputVariable {
   name: string; 
   type: string; 
   value: string;
+  harnessType?: string;
+}
+export interface inputTemplates {
+  id: string; 
+  inputVariables: inputVariable[];
+  yaml?: string
+}
+export interface TemplateRule {
+  id: string; 
+  yaml?: string
 }
 
 export interface onboardResult {
@@ -22,14 +33,14 @@ export interface onboardResult {
 }
 
 @Component({
-    selector: 'app-onboarding',
-    templateUrl: './onboarding.component.html',
-    styleUrls: ['./onboarding.component.css', "../../shared/loading-div.shared.css"]
+    selector: 'app-rule-creation',
+    templateUrl: './rule-creation.component.html',
+    styleUrls: ['./rule-creation.component.css', "../../shared/loading-div.shared.css"]
   })
-  export class OnboardingComponent implements OnInit, AfterViewInit {
+  export class RuleCreationComponent implements OnInit, AfterViewInit {
 
     
-    @ViewChild(TemplateListComponent, {static: false}) directivetemplate?: TemplateListComponent;
+    @ViewChild(TemplateSelectionComponent, {static: false}) directivetemplate?: TemplateSelectionComponent;
 
     @ViewChild(RepositoriesComponent, {static: false}) directiverepository?: RepositoriesComponent;
 
@@ -38,47 +49,53 @@ export interface onboardResult {
       //console.log(this.directivetemplate?.currentTemplate); // 
       //this.msgFromTemplate = this.directivetemplate?.msgFromTemplate!;
       //this.currentTemplate = this.directivetemplate?.currentTemplate!; // 
-      //this.currentRepository = this.directiverepository?.currentRepository!; // 
-      this.logValues('AfterViewInit');
+      this.selectedTemplates = this.directivetemplate?.selectedTemplates!; // 
+      console.log(this.selectedTemplates.entries.length)
     }
 
-    logValues(eventType: string){
-      console.log(`[${eventType}]\n staticName: ${this.directivetemplate}, name value: "${this.directivetemplate?.currentTemplate?.name}"\n nonStaticName: ${this.directiverepository}, name value: "${this.directiverepository?.currentRepository?.name}"\n`);
-    }
+    
 
-    // harness onboarding
+    // harness rule-creation
     harnessLink = "https://app.harness.io/ng/#/account/Io9SR1H7TtGBq9LVyJVB2w/ci/orgs/default/projects/"
     harnessOnboarded = "";
 
-    // Test messages
-    name = 'Child 1';
-    @Input() msgFromParent1: string = '';
 
-    currentMsgToParent = '';
-    msgFromChild1 = ''
-
-    msgFromTemplate: string[] = [];
-    msgCurrentTemplate = '';
-    currentTemplateMsgToParent = '';
-
-    // Test messages
 
     errorMessage = '';
     activeStep = 1;
-    OnboardingFormGroup: FormGroup;
+
+
+    variablesFormGroup: FormGroup[] = [];
+    
+    //dynamic forms
+
+    weightNumbers = Array.from(Array(101).keys());
+
+    templateVariablesFormGroup: FormGroup;
+    /* templateVariablesFormGroupSubs:Subscription; 
+    templateVariablesFormArray: FormArray; */
+
+    // dynamic forms 
+
+    RuleFormGroup: FormGroup;
     OnboardingGroup: FormGroup;
-    OnboardingFormGroup2: FormGroup;
-    onboardLink = { "url": "/onboarding" } as onboardResult;
+    RuleFormGroup2: FormGroup;
+    onboardLink = { "url": "/rule-creation" } as onboardResult;
     currentPipeline: string = '';
     
     currentTemplateSelected = false;
     currentRepositorySelected = false;
     currentRepository?: Repository;
+
     templates?: Template[];
     currentTemplate?: Template;
     currentIndex = -1;
     templateName = ''
     //load page
+    activeTemplateStep: number = 0;
+
+
+    selectedTemplates: Template[] = [];
     templatesEnabled: boolean = true;
     templateEmpty = false;
     loading = false;
@@ -89,22 +106,34 @@ export interface onboardResult {
 
     //Dynamic variables
     templateVariables: inputVariable[] = new Array<inputVariable>();
+    inputTemplates: inputTemplates[] = new Array<inputTemplates>();
     public variablesForm: FormGroup;
     unsubcribe: any
 
     //end Dynamic variables
 
-    
+    handleNumberChange(val:any){ console.log(val)}
 
-    constructor(private app: AppService,private templateService: TemplateService, private ff: FFService,private formBuilder: FormBuilder, private onboardingService: OnboardingService) { 
+    constructor(private app: AppService,private templateService: TemplateService, private ff: FFService,private formBuilder: FormBuilder, private rulesService: RulesService) { 
       console.log("App Starting")
+      
+      // dynamic forms 
+      this.templateVariablesFormGroup = this.formBuilder.group({
+        inputArray: this.formBuilder.array([])
+      });
+      // dynamic forms 
+
+      /* this.templateVariablesFormGroupSubs = this.templateVariablesFormGroup.valueChanges.subscribe(val=>{
+        this.handleNumberChange(val);
+      }) */
 
       this.currentRepositorySelected = false;
       this.currentTemplateSelected = false;
       //Dynamic variables
+
+      
       
       this.variablesForm = new FormGroup({
-
         fields: new FormControl(JSON.stringify(this.templateVariables.map(variable => variable.name)))
       })
       this.unsubcribe = this.variablesForm.valueChanges.subscribe((update) => {
@@ -118,23 +147,31 @@ export interface onboardResult {
         r1: ['',[Validators.required]]
       })
       
-      this.OnboardingFormGroup = this.formBuilder.group({
+      this.RuleFormGroup = this.formBuilder.group({
           // *********************************************
           // O valor padrão deste formControl será vazio
           // e os demais vazio
           // *********************************************
           name: ['', [Validators.required]],
-          username: ['', [Validators.required]],
-          email: ['', [
+          description: ['', [Validators.required]],
+          repoField: ['', [Validators.required]],
+          clause: ['', [Validators.required]],
+          value: ['', [Validators.required]],
+          weight: ['', [Validators.required]],
+          organization: ['', [Validators.required]],
+          project: ['', [Validators.required]],
+          select: ['', [
               Validators.required,
-              Validators.email
+            
           ]]
+
+          
 
       });
 
       
 
-      this.OnboardingFormGroup2 = this.formBuilder.group({
+      this.RuleFormGroup2 = this.formBuilder.group({
           // *********************************************
           // O valor padrão deste formControl será vazio
           // e os demais vazio
@@ -149,6 +186,25 @@ export interface onboardResult {
       
     }
 
+
+    setClause(){
+
+    }
+
+    cleanSpecialCharacteres(value: string): string {  
+      const specialRegexp: RegExp = /[ !@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]/gi;
+      value = value.replace(specialRegexp,"_")
+      return value;
+    }
+
+    getTemplateInputs(id: string): inputVariable[]{
+      if (this.directivetemplate?.inputTemplates != undefined) {
+        this.inputTemplates = this.directivetemplate?.inputTemplates as inputTemplates[]
+      }
+      let templateInputs = this.inputTemplates.find(element => element.id === id) as inputTemplates
+      return templateInputs.inputVariables
+    }
+
     toFormGroup(inputVariables: inputVariable[] ) {
       const group: any = {};
   
@@ -159,8 +215,35 @@ export interface onboardResult {
       return new FormGroup(group);
     }
 
-    findInputVariables(yaml: string){
-      
+    inputVariablesToYaml(inputVariables: inputVariable[],identifier: string ):TemplateRule {
+      let template = this.templates?.find(template => template.identifier === identifier) as Template
+      let templatesRule = {} as TemplateRule
+      let inputYaml = template?.yamlInput
+      inputVariables.forEach(inputVariable => {
+        let regexpPattern = "/("+inputVariable.name+"): (\<\+input\>)/";
+        let regexpMaster = new RegExp(regexpPattern,'g');
+        let letRegexVariables = "(name: )("+inputVariable.name+")(\\n[\\s]+type: )([a-zA-Z]+)(\\n[\\s]+value: )(\<\\+input\>)"
+        let variablesInputDetail = new RegExp(letRegexVariables,'i');
+
+        console.log("converting input "+inputVariable.name+" to value "+inputVariable.value)
+        
+        if (inputVariable.harnessType === "variables") {
+          //console.log("regext to convert input "+variablesInputDetail)
+          inputYaml = inputYaml?.replace(variablesInputDetail,"$1$2$3$4$5"+inputVariable.value)
+        } else if(inputVariable.harnessType === "pipeline"){
+          //console.log("regext to convert input "+regexpPattern)
+          inputYaml = inputYaml?.replace(regexpMaster,"$1: "+inputVariable.value)
+        }
+        
+        //console.log("yaml converted: \n"+inputYaml)
+        
+      })
+      templatesRule = { id: identifier, yaml: inputYaml} as TemplateRule
+      return templatesRule;
+    }
+
+    findInputVariables(yaml: string, identifier: string) {
+      let templateVariables: inputVariable[] = new Array<inputVariable>();
       if (yaml != undefined) {
         let variables = /(variables:.*\n([\s]+- name: ([a-zA-Z_]+)\n[\s]+type: ([a-zA-Z]+)\n[\s]+value: (<\+input>))+)/g
         let variablesInput = /(\n((.*?)- name: ([a-zA-Z_]+)\n[\s]+type: ([a-zA-Z]+)\n[\s]+value: (<\+input>)))/g
@@ -171,7 +254,6 @@ export interface onboardResult {
         console.log("yaml to parse:\n"+yamlWithoutVariables)
         let result = yamlWithoutVariables.match(regexpMaster)!;
         console.log("yaml parsed:\n"+result)
-        this.templateVariables = new Array<inputVariable>();
         if (result != null && result !== undefined) {
           const selfThis = this; // 👈️ closure of this
           result.forEach(function (value) {
@@ -182,11 +264,19 @@ export interface onboardResult {
             //alert("Name: "+inputName + " value: "+inputValue); // <+input> 1
             console.log(value);
             //let input = '<input formControlName="'+inputName+'"  class="form-control" type="text" name="'+inputName+'" id="variable_'+inputName+'" placeholder="'+inputName+'" >'
-            let inputVariable: inputVariable = {name: inputName, value: inputValue, type: "String" } as inputVariable
-            selfThis.templateVariables.push(inputVariable)
+            let inputVariable: inputVariable = {name: inputName, value: inputValue, type: "String", harnessType: "pipeline" } as inputVariable
+            templateVariables.push(inputVariable)
           });
-          this.templateVariables = selfThis.templateVariables
+          let inputTemplate: inputTemplates = {id: identifier, inputVariables: templateVariables } as inputTemplates
+          this.inputTemplates.push(inputTemplate);
+
+          let inputVariablesFormGroup = new FormGroup({
+            fields: new FormControl(JSON.stringify(templateVariables.map(variable => variable.name)))
+          })
+          
+          this.variablesFormGroup.push(inputVariablesFormGroup)
         }
+
         let result2 = yaml.match(variables)!;
         console.log("yaml parsed:\n"+result2)
         if (result2 != null && result2 !== undefined) {
@@ -206,8 +296,8 @@ export interface onboardResult {
                     let inputValue = resultChild[5]
                     //alert("Name: "+inputName + " type: "+ inputType + " value: "+inputValue); // <+input> 1
                     //let input = '<input formControlName="'+inputName+'"  class="form-control" type="text" name="'+inputName+'" id="variable_'+inputName+'" placeholder="'+inputName+'" >'
-                    let inputVariable: inputVariable = {name: inputName, value: inputValue, type: inputType } as inputVariable
-                    selfThis.templateVariables.push(inputVariable)
+                    let inputVariable: inputVariable = {name: inputName, value: inputValue, type: inputType, harnessType: "variables"} as inputVariable
+                    templateVariables.push(inputVariable)
                     //this.templateVariables = []//.push(input)
                   /* resultChild?.forEach(function (value3) {
                   console.log("child child variable parsed:\n"+value3[0])
@@ -222,9 +312,15 @@ export interface onboardResult {
             
             
           }
+
+        /* this.templateVariablesFormGroup =  */
+        let inputTemplate: inputTemplates = {id: identifier, inputVariables: templateVariables } as inputTemplates
+        this.inputTemplates.push(inputTemplate);
+        return templateVariables;
       }
       else{
         console.log("Yaml undefined")
+        return new Array<inputVariable>();
       }
       console.log(this.templateVariables)
       
@@ -259,16 +355,21 @@ export interface onboardResult {
       return false;
     }
 
+    nextTemplate(step: number){
+      console.log("next template = "+step)
+      this.activeTemplateStep = step;
+    }
+
     next(step: number){
-      /* if (!this.OnboardingFormGroup.valid && step >= 3 ) {
+      /* if (!this.RuleFormGroup.valid && step >= 3 ) {
           console.log("Formulário inválido");
           return;
       }
-      if (!this.OnboardingFormGroup2.valid && step >= 4) {
+      if (!this.RuleFormGroup2.valid && step >= 4) {
           console.log("Formulário inválido");
           return;
       } */
-      console.log("Formulário válido", this.OnboardingFormGroup.value);
+      console.log("Formulário válido", this.RuleFormGroup.value);
       
       
       //console.log(this.directivetemplate); // 
@@ -278,46 +379,80 @@ export interface onboardResult {
         this.currentRepository = this.directiverepository?.currentRepository!; //  
       } */
 
-      if ( step === 4){
-        
+      if ( step === 2){
+        let form:any = {}
         //this.currentTemplate = this.directivetemplate?.currentTemplate!; // 
         console.log("Diego test")
-        this.findInputVariables(this.currentTemplate?.yaml!)
-        this.variablesForm = this.toFormGroup(this.templateVariables)
-        console.log(JSON.stringify(this.templateVariables.map(variable => variable.name)))
-        console.log(this.templateVariables.map(variable => variable.name))
-      }
-      if (step === 5) {
-        if (this.currentTemplate?.yamlInput != undefined && this.currentRepository?.name != undefined ) {
-          let templateIndented = ''
-          let template = this.currentTemplate.yamlInput.split(/\r?\n/).forEach(line =>  {
-            templateIndented += "      "+line+"\n"
-          });
-          var reSpecialCharacter = /[ !@#$%^&*()+\-=\[\]{};\':"\\|,.<>\/?]/gi;
-          this.currentPipeline = "pipeline:\n  name: "+this.currentRepository?.name+"\n  identifier: "+this.currentRepository?.name.replace(reSpecialCharacter,"_")+"\n"+"  projectIdentifier: "+this.currentRepository?.name.replace(reSpecialCharacter,"_")+"\n  orgIdentifier: default\n" +"  template:\n    templateRef: account."+this.currentTemplate?.identifier+"\n    versionLabel: "+this.currentTemplate?.versionLabel+"\n    templateInputs:\n"+templateIndented;
-          console.log(this.currentPipeline);
-          console.log("Starting bonboarding...");
+        
+        for (let index = 0; index < this.selectedTemplates.length; index++) {
           
-          this.onboardingService.onboarding(this.currentPipeline,this.currentRepository?.name.replace(reSpecialCharacter,"_"),this.currentRepository?.name).subscribe(data => {
-            
-            let onboardingResult = data;
-            this.harnessOnboarded = "onboarded"
-            this.errorMessage = "";
-            this.onboardLink = onboardingResult as onboardResult;
-            console.log("Onboard Result:\n"+ onboardingResult.url);
-          },
-          err => {
-            console.log(err);
-            this.harnessOnboarded = "failed"
-            this.errorMessage = "Failed to Create pipeline";
-            console.log(err["message"]);
+          let id = this.selectedTemplates[index]!
+
+          console.log(id);
+          let template = this.templates?.find(element => element.identifier === id.identifier) as Template
+          
+          let variables: inputVariable[] =  this.findInputVariables(template?.yamlInput!,id?.identifier!) || new Array<inputVariable>();
+
+          for (let index = 0; index < variables.length; index++) {
+            const element = variables[index];
+            form[id.identifier+'*'+element.name] = new FormControl('');
           }
-          );
-          this.harnessOnboarded = "loading"
+          
           
         }
+        this.templateVariablesFormGroup = new FormGroup(form);
+        console.log("FormGroup")
+        console.log(this.templateVariablesFormGroup )
+        /* this.variablesForm = this.toFormGroup(this.templateVariables)
+        console.log(JSON.stringify(this.templateVariables.map(variable => variable.name)))
+        console.log(this.templateVariables.map(variable => variable.name)) */
+      }
+      if (step === 3) {
+        let rule: Rule = new Rule(this.cleanSpecialCharacteres(this.RuleFormGroup.get('name')?.value.toLowerCase()), this.RuleFormGroup.get('name')?.value, this.RuleFormGroup.get('description')?.value,true,"TemplateSelection",[],this.RuleFormGroup.get('repoField')?.value,this.RuleFormGroup.get('clause')?.value,this.RuleFormGroup.get('value')?.value,this.RuleFormGroup.get('project')?.value,this.RuleFormGroup.get('organization')?.value,this.RuleFormGroup.get('weight')?.value)
+        this.selectedTemplates.forEach(template =>{
+          let templateMaster = this.templates?.find(templateMaster => templateMaster.identifier === template?.identifier) as Template
+          let variables: inputVariable[] =  this.findInputVariables(templateMaster?.yamlInput!,template?.identifier!) || new Array<inputVariable>();
+          
+          
+          /* for (const obj of variables) {
+            if (obj.name === "serviceName") {
+              console.log(obj.name)
+              obj.value = "KoalaService"
+            }
+            if (obj.name === "repoName") {
+              console.log(obj.name)
+              obj.value = "KoalaRepo"
+            }
+          } */
+
+
+          console.log(variables)
+          let resultConvertion = this.inputVariablesToYaml(variables,template?.identifier!)
+          console.log(resultConvertion);
+          rule.templatesRule?.push(resultConvertion)
+        })
+
+        console.log(rule)
+        this.rulesService.create(rule).subscribe(
+          data => {
+              if (data === undefined) {
+                this.errorMessage = "Failed to Create Rule"
+              }else{
+                console.log(data);
+              }
+              //console.log(JSON.stringify(result));
+
+              
+          },
+          error => {
+              this.errorMessage = error.error.message
+              console.log("Error Creating Rule: "+this.errorMessage);
+              
+          }
+        );
         
       }
+      
       
       
 
@@ -329,11 +464,6 @@ export interface onboardResult {
     }
 
     stepEnabled(value: number){
-
-
-      if (this.msgFromParent1 === "Repositories"){
-        this.setStep(3);
-      }
       if (this.activeStep === value) {
         if (this.directiverepository != undefined) {
           if (this.currentRepository != this.directiverepository.currentRepository) {
@@ -343,9 +473,9 @@ export interface onboardResult {
           
         }
         if (this.directivetemplate != undefined) {
-          if (this.currentTemplate != this.directivetemplate.currentTemplate) {
-            console.log(this.directivetemplate.currentTemplate?.name); // 
-            this.currentTemplate = this.directivetemplate.currentTemplate;
+          if (this.selectedTemplates != this.directivetemplate.selectedTemplates) {
+            console.log(this.directivetemplate.selectedTemplates); // 
+            this.selectedTemplates = this.directivetemplate.selectedTemplates;
           }
           
         }
@@ -354,12 +484,31 @@ export interface onboardResult {
         return false;
       }
     }
+
+    stepTemplateEnabled(value: number){
+      //console.log("stepTemplateEnabled "+value +" = "+ this.activeTemplateStep);
+      if (this.activeTemplateStep === value) {
+        
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     stepActived(value: number){
         if (this.activeStep === value) {
             return "is-active";
         } else {
             return "";
         }
+    }
+
+    stepTemplateActived(value: number){
+      if (this.activeTemplateStep === value) {
+          return "is-active";
+      } else {
+          return "";
+      }
     }
 
     searchEnabled(){ return false }
@@ -444,6 +593,13 @@ export interface onboardResult {
               console.log("templates empty")
             }else{
               this.templateEmpty = false;
+              if (this.directivetemplate != undefined) {
+                if (this.templates != this.directivetemplate.templates) {
+                  console.log(this.directivetemplate.templates); // 
+                  this.directivetemplate.templates = this.templates;
+                }
+                
+              }
             }
             //console.log(data);
           },
@@ -493,7 +649,7 @@ export interface onboardResult {
       }
         this.retrieveTemplates();
         console.log(this.templates)
-        this.logValues('AfterViewInit');
+        
     }
 
     onboarding(){

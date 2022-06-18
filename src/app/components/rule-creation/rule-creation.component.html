@@ -1,0 +1,227 @@
+
+<div class="container" [hidden]="!authenticated()">
+  <div class="wrapper">
+    <ul class="steps">
+    <li [className]="stepEnabled(1) ? 'is-active' : ''">Rule Config</li>
+    <li [className]="stepEnabled(2) ? 'is-active' : ''">Template inputs</li>
+    <li [className]="stepEnabled(3) ? 'is-active' : ''">Finish</li>
+    </ul>
+    <form class="form-wrapper" [formGroup]="RuleFormGroup" *ngIf="authenticated()" [hidden]="!stepEnabled(1)">
+    <fieldset class="section" [className]="stepEnabled(1) ? 'is-active' : ''" [hidden]="!stepEnabled(1)">
+        <table class="center table table-sm table-borderless .table-hover">
+            <thead>
+                <tr>
+                    <!-- <th scope="row">#</th> -->
+                    <th class="th-lg table-header"><a>Harness Config</a></th>
+                    <!-- <th class="th-lg"><a href=""></a></th> -->
+                </tr>
+            </thead>
+            <!--Table head-->
+            <!--Table body-->
+            <tbody>
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td class="var-label td-input middle">organization name:</td>
+                    <td class="td-input"><input formControlName="organization" class="form-control inline back" type="text" placeholder="organization name" id="organization"></td>
+                </tr>
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td class="var-label td-input middle">project name:</td>
+                    <td class="td-input">
+                        <select
+                        class="form-control"
+                        formControlName="project"
+                        (change)="onboarding()">
+                            <option value="" disabled selected>Select pattern</option>
+                            <option value="repo">repo name</option>
+                            <option value="name" disabled>language + repo name</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+            <!--Table head-->
+            <thead>
+                <tr>
+                    <!-- <th scope="row">#</th> -->
+                    <th class="th-lg table-header"><a>Rule Creation</a></th>
+                    <!-- <th class="th-lg"><a href=""></a></th> -->
+                </tr>
+            </thead>
+            <!--Table head-->
+            <!--Table body-->
+            <tbody>
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td class="var-label td-input middle">rule name:</td>
+                    <td class="td-input"><input formControlName="name" class="form-control inline back" type="text" placeholder="rule name" id="name"></td>
+                </tr>
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td class="var-label td-input middle">description:</td>
+                    <td class="td-input"><input formControlName="description" class="form-control inline back" type="text" placeholder="description" id="description"></td>
+                </tr>
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td class="var-label td-input middle">repository field name:</td>
+                    <td class="">
+                        <select
+                        class="form-control"
+                        formControlName="repoField"
+                        (change)="onboarding()">
+                        <option value="" disabled selected>Select field</option>
+                            <option value="language">Language</option>
+                            <option value="name">Name</option>
+                        </select>   
+                    </td>
+                </tr>
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td class="var-label td-input middle">clause:</td>
+                    <td class="">
+                        <select
+                        class="form-control"
+                        formControlName="clause"
+                        (change)="setClause()">
+                            <option value="" disabled selected>Select the clause</option>
+                            <option value="start_with">start with</option>
+                            <option value="end_with">end with</option>
+                            <option value="contains">containes</option>
+                            <option value="regex">regex</option>
+                        </select>   
+                    </td>
+                </tr>
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td class="var-label td-input middle">value name:</td>
+                    <td class=""><input formControlName="value" class="form-control" type="text" placeholder="value" id="value"></td>
+                </tr>
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td class="var-label td-input middle">rule weight:</td>
+                    <td class="">
+                        <select class="form-select"
+                                type="text"
+                                id="weigth"
+                                formControlName="weight"
+                                >
+                            <option *ngFor="let optionWeigth of weightNumbers; let i = index" [value]="i">{{optionWeigth}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td class="var-label td-input middle">Templates:</td>
+                    <td class=""><app-template-selection></app-template-selection></td>
+                </tr>
+
+        
+            </tbody>
+        </table>
+        <p></p>
+        <div class="inline back"><button class="next" (click)="next(2)" >Next</button></div>
+
+    </fieldset>
+    </form>
+    
+
+    <form class="form-wrapper" [formGroup]="templateVariablesFormGroup" *ngIf="authenticated()" [hidden]="!stepEnabled(2)">
+        <div class="container" [hidden]="!authenticated()" *ngIf="selectedTemplates?.length! >= 1 && stepEnabled(2)">
+            <div class="wrapper">
+                <ul class="steps">
+                <li *ngFor="let template of selectedTemplates ; let i = index" [className]="stepTemplateEnabled(i) ? 'is-active' : ''">{{ template.name }}</li>
+                </ul>
+                <!-- <form class="form-wrapper" [formGroup]="templateVariablesFormGroup"> -->
+                    <fieldset *ngFor="let template of selectedTemplates ; let i = index" class="section" [className]="stepTemplateEnabled(i) ? 'is-active' : ''">
+                        <div [hidden]="!stepTemplateEnabled(i)" >
+                            <table class="center table table-sm table-borderless .table-hover">
+                                <!-- {{ template?.name}} -->
+                                <!--Table body-->
+                <!--             </table>
+                            <table class="center table table-sm table-borderless .table-hover"> -->
+                                <!--Table head-->
+                                <thead>
+                                    <tr>
+                                        <!-- <th scope="row">#</th> -->
+                                        <th class="th-lg table-header"><a>Template Variables</a></th>
+                                        <!-- <th class="th-lg"><a href=""></a></th> -->
+                                    </tr>
+                                </thead>
+                                <!--Table head-->
+                                <!--Table body-->
+                                <tbody>
+                                    <tr>
+                                        <!-- <th scope="row">1</th> -->
+                                        <td class="var-label td-input middle">pipeline name:</td>
+                                        <td class="td-input"><input class="form-control inline back" type="text" [placeholder]="template.identifier" [id]="'pipeline_'+template.identifier"></td>
+                                    </tr>
+                                    <tr *ngFor="let input of getTemplateInputs(template.identifier!); let j = index" >
+                                        
+                                        <td class="var-label">{{input?.name}}:</td>
+                                        <!-- <td><input [formControlName]="input?.name!" class="form-control inline back" type="text" [name]="input?.name" placeholder="<+input>" [id]="'variable_'+input?.name"></td> -->
+                                        <!-- {{'variable_'+template?.identifier+input?.name+j}} -->
+                                        <td><input [formControlName]="template?.identifier+'*'+input?.name!" class="form-control inline back" type="text" [name]="input?.name" placeholder="<+input>" [id]="'variable_'+template.identifier+input?.name"></td>
+                                        <!-- <td><input class="form-control inline back" type="text" [name]="input?.name" placeholder="<+input>" [id]="'variable_'+template?.identifier+input?.name+j"></td> -->
+                                    </tr>
+                            
+                                </tbody>
+                                <!--Table body-->
+                            </table>
+                            <div class="inline">
+                                <button class="previous" (click)="nextTemplate(i-1)" >Back</button>
+                            </div>
+                            <div class="inline back">
+                                <button class="btn button"  (click)="nextTemplate(i+1)" *ngIf="i+1 != selectedTemplates.length">
+                                    Next
+                                </button>
+                                <button class="btn button"  (click)="next(3)" *ngIf="i+1 === selectedTemplates.length">
+                                    Create Rule
+                                </button>
+                            </div>
+                            
+                            <!-- <div *ngFor="let input of templateVariables!; let i = index" [class.active]="i == currentIndex" class="parent-variables">
+                                <div class="inline">
+                                    <label>{{input?.name}}:</label>
+                                </div> 
+                                <div class="inline">
+                                    <input [formControlName]="input?.name!"  class="form-control inline back" type="text" [name]="input?.name" value="{{input?.value}}" [id]="'variable_'+input?.name" [placeholder]="input?.name" >
+                                </div>
+                            </div> -->
+                        </div>
+                    </fieldset>
+                <!-- </form> -->
+                <!-- {{ selectedTemplates }}    -->
+            </div>
+        </div>
+    </form>
+    <form class="form-wrapper" [formGroup]="RuleFormGroup2" *ngIf="authenticated()" [hidden]="!stepEnabled(3)">
+
+        <fieldset class="section" [className]="stepEnabled(3) ? 'is-active' : ''"  [hidden]="!stepEnabled(3)">
+            <!-- <div *ngIf="harnessOnboarded === 'onboarded' || harnessOnboarded === 'failed'"> -->
+            <div >
+                <h3>{{ (errorMessage === '') ? 'Rule Created' : 'Sorry! We coudn\'t create the rule! =(' }} </h3>
+                <p>{{ (errorMessage === '') ? 'Your rule has been created.' : 'We are sorry for this, but something went wrong.' }}</p>
+                <p *ngIf="errorMessage === ''"></p>
+            
+                <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
+                
+                <div class="inline"><button class="previous" (click)="next(1)">Back</button><button class="go-to-harness" (click)="goToHarness(onboardLink.url)" *ngIf="errorMessage === ''">Go to Harness</button></div>
+                <!-- <div [routerLink]="onboardLink.url" class="button" *ngIf="errorMessage != ''" >Go to Harness</div> -->
+            </div>
+            <div class="load-4" *ngIf="harnessOnboarded === 'loading'">
+                <p>Creating the rule, please wait..</p>
+                <div class="ring-1"></div>
+            </div>
+        </fieldset>
+        </form>
+    </div>
+</div>
+
+
+
+
+<!-- <div class="list row" [hidden]="!authenticated()">
+    {{ msgFromParent1 }}
+</div> -->
+<div [hidden]="authenticated()">
+	<p>Login to see Tutorials</p>
+</div>

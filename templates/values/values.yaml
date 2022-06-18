@@ -1,0 +1,36 @@
+name: <+service.name>
+replicas: 1
+
+containerPort: 80
+
+livenessProbeHealthCheck: /
+livenessProbeinitialDelaySeconds: 20
+
+#rewriteDisabled: true
+rootPath: true
+
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 20m
+
+virtualPath: <+service.name>
+
+image: <+artifact.image>
+imagePolicy: Always
+dockercfg: <+artifact.imagePullSecret>
+
+environment: <+env.name>
+
+createNamespace: true
+namespace: <+infra.namespace>
+
+# Service Type allow you to specify what kind of service you want.
+# Possible values for ServiceType are:
+# ClusterIP | NodePort | LoadBalancer | ExternalName
+serviceType: LoadBalancer
+
+# A Service can map an incoming port to any targetPort.
+# targetPort is where application is listening on inside the container.
+servicePort: 80
+serviceTargetPort: 80

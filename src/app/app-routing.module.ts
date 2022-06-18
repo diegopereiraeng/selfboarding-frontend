@@ -12,6 +12,10 @@ import { AdminComponent } from './components/admin/admin.component';
 import { TemplateListComponent } from './components/templates/template-list.component';
 import { OnboardingComponent } from './components/onboarding/onboarding.component';
 import { RepositoriesComponent } from './components/repositories/repositories.component';
+import { RuleCreationComponent } from './components/rule-creation/rule-creation.component';
+import { RulesComponent } from './components/rules/rules.component';
+import { TemplateSelectionComponent } from './components/template-selection/template-selection.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -26,7 +30,10 @@ const routes: Routes = [
   { path: 'admin', component: AdminComponent},
   { path: 'template-list', component: TemplateListComponent},
   { path: 'onboarding', component: OnboardingComponent},
-  { path: 'repository-list', component: RepositoriesComponent}
+  { path: 'repository-list', component: RepositoriesComponent},
+  { path: 'rule-creation', component: RuleCreationComponent},
+  { path: 'rules', component: RulesComponent},
+  { path: 'template-selection', component: TemplateSelectionComponent}
 ];
 
 @NgModule({

@@ -28,36 +28,32 @@
 
     </fieldset>
     </form>
-    <form class="form-wrapper" [formGroup]="OnboardingFormGroup2" *ngIf="stepEnabled(2) || stepEnabled(3) || stepEnabled(5)">
+    <form class="form-wrapper" [formGroup]="OnboardingFormGroup">
+        <fieldset [className]="stepEnabled(2) ? 'is-active' : ''" class="section" *ngIf="stepEnabled(2)">
+        <h3>Select a repository:</h3>
 
-    <fieldset class="section" [className]="stepEnabled(3) ? 'is-active' : ''" *ngIf="stepEnabled(3)">
-        <h3>Select a Template</h3>
-        <app-template-list></app-template-list>
-        <div class="inline"><button class="previous" (click)="next(2)">Back</button></div>
-            <div class="inline back"><button class="next" (click)="next(4)" >Next</button></div>
-        <br>
+        <app-repositories></app-repositories>
         
-    </fieldset>
-    
-
-    <fieldset class="section" [className]="stepEnabled(5) ? 'is-active' : ''" *ngIf="stepEnabled(5)">
-        <div *ngIf="harnessOnboarded === 'onboarded' || harnessOnboarded === 'failed'">
-            <h3>{{ (errorMessage === '') ? 'APP Onboarded' : 'Sorry! We coudn\'t onboard your app! =(' }} </h3>
-            <p>{{ (errorMessage === '') ? 'Your repository has been onboarded.' : 'We are sorry for this, but something went wrong.' }}</p>
-            <p *ngIf="errorMessage === ''"></p>
-            <p *ngIf="errorMessage === ''">Welcome to Harness !</p>
+        <div class="inline"><button class="previous" (click)="next(1)">Back</button></div>
+        <div class="inline back"><button class="next" (click)="next(3)" [disabled]="!checkSelectedOption()">Next</button></div>
+        <!-- <div><button class="next" (click)="next(3)" [disabled]="!OnboardingFormGroup.valid">Next</button></div> -->
         
-            <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
-            
-            <div class="inline"><button class="previous" (click)="next(1)" *ngIf="errorMessage != ''">Back</button></div>
-            <div [routerLink]="onboardLink.url" class="button" *ngIf="errorMessage === ''" >Go to Harness</div>
-        </div>
-        <div class="load-4" *ngIf="harnessOnboarded === 'loading'">
-            <p>Onboarding your app, please wait..</p>
-            <div class="ring-1"></div>
-        </div>
-    </fieldset>
+        
+        
+        </fieldset>
     </form>
+
+    <form class="form-wrapper" [formGroup]="OnboardingFormGroup2" *ngIf="stepEnabled(3)">
+        <fieldset class="section" [className]="stepEnabled(3) ? 'is-active' : ''" *ngIf="stepEnabled(3)">
+            <h3>Select a Template</h3>
+            <app-template-list></app-template-list>
+            <div class="inline"><button class="previous" (click)="next(2)">Back</button></div>
+                <div class="inline back"><button class="next" (click)="next(4)" [disabled]="!checkSelectedOption()" >Next</button></div>
+            <br>
+            
+        </fieldset>
+    </form>
+    
     <form class="form-wrapper" [formGroup]="variablesForm" *ngIf="stepEnabled(4)">
     <fieldset class="section" [className]="stepEnabled(4) ? 'is-active' : ''" *ngIf="stepEnabled(4)">
         <div *ngIf="templateVariables != []" >
@@ -66,8 +62,34 @@
                 <thead>
                     <tr>
                         <!-- <th scope="row">#</th> -->
-                        <th class="th-lg var-label"><a>Template Variables</a></th>
-                        <th class="th-lg"><a href="">Value</a></th>
+                        <th class="th-lg table-header"><a>Onboarding Input</a></th>
+                        <!-- <th class="th-lg"><a href=""></a></th> -->
+                    </tr>
+                </thead>
+                <!--Table head-->
+                <!--Table body-->
+                <tbody>
+                    <tr>
+                        <!-- <th scope="row">1</th> -->
+                        <td class="var-label td-input">project name:</td>
+                        <td class="td-input"><input class="form-control inline back" type="text" [placeholder]="currentRepository?.name" id="project"></td>
+                    </tr>
+                    <tr>
+                        <!-- <th scope="row">1</th> -->
+                        <td class="var-label td-input">pipeline name:</td>
+                        <td class="td-input"><input class="form-control inline back" type="text" [placeholder]="currentRepository?.name + '_' + currentTemplate?.name" id="pipeline"></td>
+                    </tr>
+            
+                </tbody>
+                <!--Table body-->
+<!--             </table>
+            <table class="center table table-sm table-borderless .table-hover"> -->
+                <!--Table head-->
+                <thead>
+                    <tr>
+                        <!-- <th scope="row">#</th> -->
+                        <th class="th-lg table-header"><a>Template Variables</a></th>
+                        <!-- <th class="th-lg"><a href=""></a></th> -->
                     </tr>
                 </thead>
                 <!--Table head-->
@@ -97,20 +119,26 @@
         </div>
     </fieldset>
     </form>
-    <form class="form-wrapper" [formGroup]="OnboardingFormGroup">
-        <fieldset [className]="stepEnabled(2) ? 'is-active' : ''" class="section" *ngIf="stepEnabled(2)">
-        <h3>Select a repository:</h3>
+    <form class="form-wrapper" [formGroup]="OnboardingFormGroup2" *ngIf="stepEnabled(5)">
 
-        <app-repositories></app-repositories>
-        
-        <div class="inline"><button class="previous" (click)="next(1)">Back</button></div>
-        <div class="inline back"><button class="next" (click)="next(3)" >Next</button></div>
-        <!-- <div><button class="next" (click)="next(3)" [disabled]="!OnboardingFormGroup.valid">Next</button></div> -->
-        
-        
-        
+        <fieldset class="section" [className]="stepEnabled(5) ? 'is-active' : ''" *ngIf="stepEnabled(5)">
+            <div *ngIf="harnessOnboarded === 'onboarded' || harnessOnboarded === 'failed'">
+                <h3>{{ (errorMessage === '') ? 'APP Onboarded' : 'Sorry! We coudn\'t onboard your app! =(' }} </h3>
+                <p>{{ (errorMessage === '') ? 'Your repository has been onboarded.' : 'We are sorry for this, but something went wrong.' }}</p>
+                <p *ngIf="errorMessage === ''"></p>
+                <p *ngIf="errorMessage === ''">Welcome to Harness !</p>
+            
+                <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
+                
+                <div class="inline"><button class="previous" (click)="next(1)">Back</button><button class="go-to-harness" (click)="goToHarness(onboardLink.url)" *ngIf="errorMessage === ''">Go to Harness</button></div>
+                <!-- <div [routerLink]="onboardLink.url" class="button" *ngIf="errorMessage != ''" >Go to Harness</div> -->
+            </div>
+            <div class="load-4" *ngIf="harnessOnboarded === 'loading'">
+                <p>Onboarding your app, please wait..</p>
+                <div class="ring-1"></div>
+            </div>
         </fieldset>
-    </form>
+        </form>
     
     </div>
 </div>

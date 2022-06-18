@@ -61,6 +61,7 @@
                     {{ currentRepository?.enabled ? "Onboarded" : "Pending" }}
                   </div>
                   <span class="badge badge-primary">{{ currentRepository?.language }}</span>
+                  <span class="badge badge-secondary">{{ currentRepository?.subLanguages }}</span>
                   <br>
                   <a  routerLink="/repositories/{{ currentRepository?.id }}">
                     <button class="m-3 btn btn-sm btn-secondary" (click)="onboarding()">
@@ -103,6 +104,7 @@
                 {{ currentRepository.enabled ? "Onboarded" : "Pending" }}
               </div>
               <span class="badge badge-primary">{{ currentRepository.language }}</span>
+              <span class="badge badge-secondary">{{ currentRepository?.subLanguages }}</span>
               <br>
               <a  routerLink="/repositories/{{ currentRepository.id }}">
                 <button class="m-3 btn btn-sm btn-secondary" (click)="onboarding()">
