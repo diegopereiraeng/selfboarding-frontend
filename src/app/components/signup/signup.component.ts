@@ -130,7 +130,9 @@ export class SinupComponent {
 
     
     constructor(private app: AppService, private http: HttpClient, private ff: FFService,private formBuilder: FormBuilder, private login: LoginService) {
-        
+        if (!this.ff.flagExists('Signup')) {
+            ff.SetFlags('Signup',false);
+        }
         //ff.SetFlags('Sinup_Version',"v2");
         this.signupFormGroup = this.formBuilder.group({
             // *********************************************
@@ -158,7 +160,9 @@ export class SinupComponent {
         
     }
 
-    
+    signupEnabled(){
+        return Boolean(this.ff.GetFlags('Signup'));
+    }
 
     signup() {
         if (this.signupFormGroup2.get('password')?.value === this.signupFormGroup2.get('password2')?.value) {

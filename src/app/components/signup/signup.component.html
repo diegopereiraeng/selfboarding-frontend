@@ -37,7 +37,7 @@
             Email is Invalid
             </span>
             </ng-container>
-        <div><button class="next" (click)="next(2)" [disabled]="!signupFormGroup.valid">Next</button></div>
+        <div><button class="next" (click)="next(2)" [disabled]="!signupEnabled() || !signupFormGroup.valid">Next</button></div>
         
         
         
@@ -64,7 +64,7 @@
         <div class="row cf">
         <div class="five col" >
             <input type="radio" name="r1" id="r3"><label for="r3">
-            <h4>Project Manager</h4>
+            <h4>Product Manager</h4>
             </label>
         </div>
         </div>

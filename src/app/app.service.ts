@@ -93,14 +93,14 @@ export class AppService {
             authorization : this.token.tokenType + ' ' + this.token.accessToken
         });
         
-        //const response = await this.http.get<Auth>('http://34.133.29.95:80/auth', {headers: headers}).toPromise();
-        const response = await this.http.get<Auth>('http://34.133.29.95:80/auth', {headers: headers}).toPromise();
+        //const response = await this.http.get<Auth>('http://localhost:8080/auth', {headers: headers}).toPromise();
+        const response = await this.http.get<Auth>('http://localhost:8080/auth', {headers: headers}).toPromise();
 
         if (response['name']) {
             //console.log("authenticating user: "+response['name'])
             this.authenticated = true;
             if (this.authenticated) {
-                this.http.get<User>('http://34.133.29.95:80/users/me', {headers: headers}).subscribe(response => {
+                this.http.get<User>('http://localhost:8080/users/me', {headers: headers}).subscribe(response => {
                 this.currentUser.username = response.username;
                 this.currentUser.name = response.name;
                 this.currentUser.email = response.email;
@@ -122,9 +122,9 @@ export class AppService {
             authorization : this.token.tokenType + ' ' + this.token.accessToken
         } : {});
         
-        //const response = await this.http.get<Auth>('http://34.133.29.95:80/auth', {headers: headers}).toPromise();
-        const response = await this.http.get<Auth>('http://34.133.29.95:80/auth', {headers: headers}).toPromise();
-        /* const result = await this.http.get<Auth>('http://34.133.29.95:80/auth', {headers: headers}).subscribe(response => {
+        //const response = await this.http.get<Auth>('http://localhost:8080/auth', {headers: headers}).toPromise();
+        const response = await this.http.get<Auth>('http://localhost:8080/auth', {headers: headers}).toPromise();
+        /* const result = await this.http.get<Auth>('http://localhost:8080/auth', {headers: headers}).subscribe(response => {
             if (response['name']) {
                 console.log("authenticating user: "+response['name'])
                 this.authenticated = true;
@@ -144,8 +144,8 @@ export class AppService {
 
         if (this.authenticated) {
             //console.log("App Service: Getting User info...")
-            //this.http.get<User>('http://34.133.29.95:80/users/me', {headers: headers}).subscribe(response => {
-            this.http.get<User>('http://34.133.29.95:80/users/me', {headers: headers}).subscribe(response => {
+            //this.http.get<User>('http://localhost:8080/users/me', {headers: headers}).subscribe(response => {
+            this.http.get<User>('http://localhost:8080/users/me', {headers: headers}).subscribe(response => {
             this.currentUser.username = response.username;
             this.currentUser.name = response.name;
             this.currentUser.email = response.email;

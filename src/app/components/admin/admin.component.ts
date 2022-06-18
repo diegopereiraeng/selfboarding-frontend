@@ -45,7 +45,7 @@ export class AdminComponent {
     //activeStep = 1;
 
     constructor(private app: AppService, private ff: FFService,private formBuilder: FormBuilder, private login: LoginService, private userService: UserService ) {
-        //http.get('http://34.133.29.95:80/api/').subscribe(data => this.greeting = data);
+        //http.get('http://localhost:8080/api/').subscribe(data => this.greeting = data);
         if (!this.ff.flagExists('Admin_Version')) {
             ff.SetFlags('Admin_Version',"v1");
         }

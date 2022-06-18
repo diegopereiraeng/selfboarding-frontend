@@ -6,8 +6,8 @@ import { UserBackend } from '../models/userBackend.model';
 
 //import * as dotenv from 'dotenv';
 
-//const baseUrl = 'http://34.133.29.95:80'; //process.env.REPOSITORY_BACKEND||'http://34.133.29.95:80/api/repositories';
-const baseUrl = 'http://34.133.29.95:80';
+//const baseUrl = 'http://localhost:8080'; //process.env.REPOSITORY_BACKEND||'http://localhost:8080/api/repositories';
+const baseUrl = 'http://localhost:8080';
 
 export interface UserSignup {
     name: string; 
