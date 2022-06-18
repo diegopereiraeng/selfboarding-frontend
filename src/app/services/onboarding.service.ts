@@ -6,8 +6,8 @@ import { AppService } from 'src/app/app.service';
 
 //import * as dotenv from 'dotenv';
 
-//const baseUrl = 'http://localhost:8080/api/repositories'; //process.env.REPOSITORY_BACKEND||'http://localhost:8080/api/repositories';
-const baseUrl = 'http://localhost:8080/api/harness';
+//const baseUrl = 'http://34.133.29.95:80/api/repositories'; //process.env.REPOSITORY_BACKEND||'http://34.133.29.95:80/api/repositories';
+const baseUrl = 'http://34.133.29.95:80/api/harness';
 
 
 @Injectable({
