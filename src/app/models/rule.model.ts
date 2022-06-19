@@ -1,6 +1,7 @@
 export interface TemplateRule {
   id: string; 
   yaml?: string
+  versionLabel?: string
 }
 
 export class Rule {

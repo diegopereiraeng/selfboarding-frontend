@@ -235,7 +235,7 @@ export interface onboardResult {
         //console.log("yaml converted: \n"+inputYaml)
         
       })
-      templatesRule = { id: identifier, yaml: inputYaml} as TemplateRule
+      templatesRule = { id: identifier, yaml: inputYaml, versionLabel: template?.versionLabel } as TemplateRule
       return templatesRule;
     }
 
