@@ -239,7 +239,7 @@ export interface onboardResult {
       return templatesRule;
     }
 
-    findInputVariables(yaml: string, identifier: string) {
+    findInputVariables(yaml: string, identifier: string, versionLabel: string) {
       let templateVariables: inputVariable[] = new Array<inputVariable>();
       if (yaml != undefined) {
         let variables = /(variables:.*\n([\s]+- name: ([a-zA-Z_]+)\n[\s]+type: ([a-zA-Z]+)\n[\s]+value: (<\+input>))+)/g
@@ -264,7 +264,7 @@ export interface onboardResult {
             let inputVariable: inputVariable = {name: inputName, value: inputValue, type: "String", harnessType: "pipeline" } as inputVariable
             templateVariables.push(inputVariable)
           });
-          let inputTemplate: inputTemplates = {id: identifier, inputVariables: templateVariables } as inputTemplates
+          let inputTemplate: inputTemplates = {id: identifier, inputVariables: templateVariables, versionLabel: versionLabel } as inputTemplates
           this.inputTemplates.push(inputTemplate);
 
           let inputVariablesFormGroup = new FormGroup({
@@ -311,7 +311,7 @@ export interface onboardResult {
           }
 
         /* this.templateVariablesFormGroup =  */
-        let inputTemplate: inputTemplates = {id: identifier, inputVariables: templateVariables } as inputTemplates
+        let inputTemplate: inputTemplates = {id: identifier, inputVariables: templateVariables, versionLabel: versionLabel } as inputTemplates
         this.inputTemplates.push(inputTemplate);
         return templateVariables;
       }
@@ -388,7 +388,7 @@ export interface onboardResult {
           console.log(id);
           let template = this.templates?.find(element => element.identifier === id.identifier) as Template
           
-          let variables: inputVariable[] =  this.findInputVariables(template?.yamlInput!,id?.identifier!) || new Array<inputVariable>();
+          let variables: inputVariable[] =  this.findInputVariables(template?.yamlInput!,id?.identifier!,template?.versionLabel!) || new Array<inputVariable>();
 
           for (let index = 0; index < variables.length; index++) {
             const element = variables[index];
@@ -408,7 +408,7 @@ export interface onboardResult {
         let rule: Rule = new Rule(this.cleanSpecialCharacteres(this.RuleFormGroup.get('name')?.value.toLowerCase()), this.RuleFormGroup.get('name')?.value, this.RuleFormGroup.get('description')?.value,true,"TemplateSelection",[],this.RuleFormGroup.get('repoField')?.value,this.RuleFormGroup.get('clause')?.value,this.RuleFormGroup.get('value')?.value,this.RuleFormGroup.get('project')?.value,this.RuleFormGroup.get('organization')?.value,this.RuleFormGroup.get('weight')?.value)
         this.selectedTemplates.forEach(template =>{
           let templateMaster = this.templates?.find(templateMaster => templateMaster.identifier === template?.identifier) as Template
-          let variables: inputVariable[] =  this.findInputVariables(templateMaster?.yamlInput!,template?.identifier!) || new Array<inputVariable>();
+          let variables: inputVariable[] =  this.findInputVariables(templateMaster?.yamlInput!,template?.identifier!,template?.versionLabel!) || new Array<inputVariable>();
           
           
           /* for (const obj of variables) {
