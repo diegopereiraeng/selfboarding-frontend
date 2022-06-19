@@ -408,7 +408,7 @@ export interface onboardResult {
         let rule: Rule = new Rule(this.cleanSpecialCharacteres(this.RuleFormGroup.get('name')?.value.toLowerCase()), this.RuleFormGroup.get('name')?.value, this.RuleFormGroup.get('description')?.value,true,"TemplateSelection",[],this.RuleFormGroup.get('repoField')?.value,this.RuleFormGroup.get('clause')?.value,this.RuleFormGroup.get('value')?.value,this.RuleFormGroup.get('project')?.value,this.RuleFormGroup.get('organization')?.value,this.RuleFormGroup.get('weight')?.value)
         this.selectedTemplates.forEach(template =>{
           let templateMaster = this.templates?.find(templateMaster => templateMaster.identifier === template?.identifier) as Template
-          let variables: inputVariable[] =  this.findInputVariables(templateMaster?.yamlInput!,template?.identifier!,template?.versionLabel!) || new Array<inputVariable>();
+          let variables: inputVariable[] =  this.findInputVariables(templateMaster?.yamlInput!,template?.identifier!,templateMaster?.versionLabel!) || new Array<inputVariable>();
           
           
           /* for (const obj of variables) {
