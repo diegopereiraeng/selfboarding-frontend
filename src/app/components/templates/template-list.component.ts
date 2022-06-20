@@ -33,8 +33,23 @@ import { AppService } from 'src/app/app.service';
     isDesc: boolean = false;
     column: string = 'name';
 
+
+    //user agent 
+    userAgent = 'desktop';
+
     constructor(private app: AppService,private templateService: TemplateService, private ff: FFService) { 
       console.log("App Starting")
+      var ua = navigator.userAgent;
+      
+      if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)){
+      this.userAgent = "mobile"
+      }
+      else if(/Chrome/i.test(ua)){
+      this.userAgent = "chrome"
+      }
+      else {
+      this.userAgent = "desktop"
+      }
 
       /* if (!this.ff.flagExists('Harness_Templates')) {
         ff.SetFlags('Harness_Templates',true);

@@ -94,6 +94,8 @@ export interface onboardResult {
 
     //end Dynamic variables
 
+    userAgent = 'desktop';
+
     
 
     constructor(private app: AppService,private templateService: TemplateService, private ff: FFService,private formBuilder: FormBuilder, private onboardingService: OnboardingService) { 
@@ -146,6 +148,7 @@ export interface onboardResult {
         ff.SetFlags('Harness_Templates',true);
       }  */
 
+      
       
     }
 

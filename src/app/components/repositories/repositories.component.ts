@@ -34,13 +34,41 @@ import { AppService } from 'src/app/app.service';
     pageSize = 5;
     pageSizes = [5, 10, 20];
 
+    // user agent
+    userAgent = 'desktop';
+    
+
     constructor(private app: AppService,private repositoryService: RepositoryService, private ff: FFService) { 
       console.log("App Starting")
+
+      var ua = navigator.userAgent;
+
+      if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)){
+        this.userAgent = "mobile"
+      }
+      else if(/Chrome/i.test(ua)){
+        this.userAgent = "chrome"
+      }
+      else {
+        this.userAgent = "desktop"
+      }
 
       /* if (!this.ff.flagExists('Harness_Repositories')) {
         ff.SetFlags('Harness_Repositories',true);
       }  */
     }
+
+    // pagination
+    handlePageChange(event: number): void {
+      this.page = event;
+      this.retrieveRepositories();
+    }
+    handlePageSizeChange(event: any): void {
+      this.pageSize = event.target.value;
+      this.page = 1;
+      this.retrieveRepositories();
+    }
+    // end pagination
 
     searchEnabled(){ return false }
 
@@ -153,17 +181,7 @@ import { AppService } from 'src/app/app.service';
           
           });
     }
-    // pagination
-    handlePageChange(event: number): void {
-      this.page = event;
-      this.retrieveRepositories();
-    }
-    handlePageSizeChange(event: any): void {
-      this.pageSize = event.target.value;
-      this.page = 1;
-      this.retrieveRepositories();
-    }
-    // end pagination
+    
     refreshList(): void {
       this.retrieveRepositories();
       this.currentRepository = undefined;

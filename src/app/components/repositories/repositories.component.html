@@ -41,7 +41,7 @@
                             <!-- <th scope="row">#</th> -->
                             <th class="th-lg"><a>Name</a></th>
                             <th class="th-lg"><a href="">Language</a></th>
-                            <th class="th-lg"><a href="">Branch</a></th>
+                            <th class="th-lg" *ngIf="userAgent == 'desktop' || userAgent == 'chrome'"><a href="">Branch</a></th>
                             <th class="th-lg"><a href="">Onboarded</a></th>
                         </tr>
                     </thead>
@@ -57,7 +57,7 @@
                             <!-- <th scope="row">1</th> -->
                             <td>{{ repository.name }}</td>
                             <td>{{ repository.language }}</td>
-                            <td>{{ repository.branch }}</td>
+                            <td *ngIf="userAgent == 'desktop' || userAgent == 'chrome'">{{ repository.branch }}</td>
                             <td>{{ repository.enabled }}</td>
                         </tr>
                 

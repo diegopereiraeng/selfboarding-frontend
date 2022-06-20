@@ -34,7 +34,14 @@ export class TemplateSelectionComponent {
     inputTemplates: inputTemplates[] = new Array<inputTemplates>();
 
     
+
+
     constructor(private fb: FormBuilder) {
+
+        var ua = navigator.userAgent;
+
+        
+
         this.myForm = this.fb.group({
             city: [this.selectedItems],
             template: [this.selectedTemplates]
