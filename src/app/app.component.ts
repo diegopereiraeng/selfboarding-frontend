@@ -7,6 +7,11 @@ import { finalize } from "rxjs/operators";
 
 
 
+// USER RUM
+import { datadogRum } from '@datadog/browser-rum';
+
+
+
 // Feature Flags
 import { FFService } from 'src/app/services/ff.service';
 
@@ -36,6 +41,21 @@ export class AppComponent implements OnInit{
   constructor(private app: AppService, private http: HttpClient, private router: Router, private ff: FFService) {
     //this.app.authenticate(undefined, undefined);
 
+    datadogRum.init({
+      applicationId: '30927cbc-6b55-4c08-9b40-4dac1574ff34',
+      clientToken: 'pubefd049856b7fad6db7bdfacd1c29d58c',
+      site: 'datadoghq.com',
+      service:'selfboarding',
+      env:'prod',
+      // Specify a version number to identify the deployed version of your application in Datadog 
+      // version: '1.0.0',
+      sampleRate: 100,
+      premiumSampleRate: 100,
+      trackInteractions: true,
+      defaultPrivacyLevel:'mask-user-input'
+    });
+        
+    datadogRum.startSessionReplayRecording();
 
     this.registerFlag = this.registerFlag.bind(this);
 
