@@ -1,5 +1,5 @@
 export class Repository {
-  id?: any;
+  full_name?: string;
   name?: string;
   description?: string;
   enabled?: boolean;
@@ -10,4 +10,13 @@ export class Repository {
   contributors?: Array<string>;
   provider?: string;
   link?: string;
+  onboarded?: boolean;
+  fork?: boolean;
+  permissions?: any;
+  group?: string;
+  revision?: number;
+  orgRevision?: number;
+  created_at?: string;
+  updated_at?: string;
+
 }

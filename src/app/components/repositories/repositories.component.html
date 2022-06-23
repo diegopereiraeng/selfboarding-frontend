@@ -25,7 +25,7 @@
                                 <button
                                 class="btn btn-outline-secondary"
                                 type="button"
-                                (click)="searchName()"
+                                (click)="retrieveRepositories()"
                                 >
                                 Search
                                 </button>
@@ -39,10 +39,11 @@
                     <thead>
                         <tr>
                             <!-- <th scope="row">#</th> -->
+                            <th class="th-lg" *ngIf="userAgent == 'desktop' || userAgent == 'chrome'"><a>Full Name</a></th>
                             <th class="th-lg"><a>Name</a></th>
                             <th class="th-lg"><a href="">Language</a></th>
-                            <th class="th-lg" *ngIf="userAgent == 'desktop' || userAgent == 'chrome'"><a href="">Branch</a></th>
-                            <th class="th-lg"><a href="">Onboarded</a></th>
+                            <th class="th-lg" *ngIf="userAgent == 'desktop' || userAgent == 'chrome'"><a>Branch</a></th>
+                            <th class="th-lg"><a>Onboarded</a></th>
                         </tr>
                     </thead>
                     <!--Table head-->
@@ -55,10 +56,11 @@
                             }; let i = index" [class.active]="i == currentIndex"
                         (click)="setActiveRepository(repository, i)">
                             <!-- <th scope="row">1</th> -->
+                            <td *ngIf="userAgent == 'desktop' || userAgent == 'chrome'">{{ repository.full_name }}</td>
                             <td>{{ repository.name }}</td>
                             <td>{{ repository.language }}</td>
                             <td *ngIf="userAgent == 'desktop' || userAgent == 'chrome'">{{ repository.branch }}</td>
-                            <td>{{ repository.enabled }}</td>
+                            <td>{{ repository.enabled ? "Onboarded" : "No" }}</td>
                         </tr>
                 
                     </tbody>

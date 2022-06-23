@@ -5,8 +5,8 @@ import { Message } from '../models/message.model';
 
 //import * as dotenv from 'dotenv';
 
-//const baseUrl = 'http://34.133.29.95:80/api/'; //process.env.REPOSITORY_BACKEND||'http://34.133.29.95:80/api/repositories';
-const baseUrl = 'http://34.133.29.95:80/api/';
+//const baseUrl = 'http://localhost:8080/api/'; //process.env.REPOSITORY_BACKEND||'http://localhost:8080/api/repositories';
+const baseUrl = 'http://localhost:8080/api/';
 
 
 @Injectable({

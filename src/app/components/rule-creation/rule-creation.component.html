@@ -205,7 +205,7 @@
             
                 <p *ngIf="errorMessage != ''">{{ errorMessage }}</p>
                 
-                <div class="inline"><button class="go-to-harness" routerLink="rules" *ngIf="errorMessage === ''">Go to Rules</button></div>
+                <div class="inline"><a routerLink="/rules" *ngIf="errorMessage === ''"><button class="go-to-harness" >Go to Rules</button></a></div>
                 <!-- <div [routerLink]="onboardLink.url" class="button" *ngIf="errorMessage != ''" >Go to Harness</div> -->
             </div>
             <div class="load-4" *ngIf="harnessOnboarded === 'loading'">

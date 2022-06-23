@@ -70,7 +70,7 @@ import { AppService } from 'src/app/app.service';
     }
     // end pagination
 
-    searchEnabled(){ return false }
+    searchEnabled(){ return true }
 
     getRequestParams(searchName: string, page: number, pageSize: number): any {
       // tslint:disable-next-line:prefer-const

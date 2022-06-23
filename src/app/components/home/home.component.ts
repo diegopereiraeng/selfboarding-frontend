@@ -15,8 +15,8 @@ export class HomeComponent {
     greeting: Message = {};
 
     constructor(private app: AppService, private http: HttpClient, private messageService: MessageService, private ff: FFService) {
-        //http.get('http://34.133.29.95:80/api/').subscribe(data => this.greeting = data);
-        http.get('http://34.133.29.95:80/api/',{headers: new HttpHeaders({ authorization : `${this.app.getToken()}` || '' })}).subscribe(data => this.greeting = data);
+        //http.get('http://localhost:8080/api/').subscribe(data => this.greeting = data);
+        http.get('http://localhost:8080/api/',{headers: new HttpHeaders({ authorization : `${this.app.getToken()}` || '' })}).subscribe(data => this.greeting = data);
         
         if (!this.ff.flagExists('Home_Version')) {
             ff.SetFlags('Home_Version',"v2");

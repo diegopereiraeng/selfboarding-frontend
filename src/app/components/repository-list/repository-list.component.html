@@ -42,6 +42,9 @@
                 </li>
                 <div *ngIf="currentIndex == i && userAgent != 'desktop' && userAgent != 'chrome'" class="list-group-item-detail">
                   <div>
+                    <label><strong>Full Name:</strong></label> {{ currentRepository?.full_name }}
+                  </div>
+                  <div>
                     <label><strong>Name:</strong></label> {{ currentRepository?.name }}
                   </div>
                   <div>
@@ -57,13 +60,13 @@
                     {{ currentRepository?.owner }}
                   </div>
                   <div>
-                    <label><strong>Status:</strong></label>
-                    {{ currentRepository?.enabled ? "Onboarded" : "Pending" }}
+                    <label><strong>Onboarded:</strong></label>
+                    {{ currentRepository?.enabled ? "Onboarded" : "No" }}
                   </div>
                   <span class="badge badge-primary">{{ currentRepository?.language }}</span>
                   <span class="badge badge-secondary">{{ currentRepository?.subLanguages }}</span>
                   <br>
-                  <a  routerLink="/repositories/{{ currentRepository?.id }}">
+                  <a  routerLink="/repositories/{{ currentRepository?.full_name }}">
                     <button class="m-3 btn btn-sm btn-secondary" (click)="onboarding()">
                       Edit
                     </button>
@@ -85,6 +88,9 @@
             <div *ngIf="currentRepository && userAgent != 'mobile'">
               <h4>Repository</h4>
               <div>
+                <label><strong>Full Name:</strong></label> {{ currentRepository?.full_name }}
+              </div>
+              <div>
                 <label><strong>Name:</strong></label> {{ currentRepository.name }}
               </div>
               <div>
@@ -101,12 +107,12 @@
               </div>
               <div>
                 <label><strong>Status:</strong></label>
-                {{ currentRepository.enabled ? "Onboarded" : "Pending" }}
+                {{ currentRepository.enabled ? "Onboarded" : "No" }}
               </div>
               <span class="badge badge-primary">{{ currentRepository.language }}</span>
               <span class="badge badge-secondary">{{ currentRepository?.subLanguages }}</span>
               <br>
-              <a  routerLink="/repositories/{{ currentRepository.id }}">
+              <a  routerLink="/repositories/{{ currentRepository.full_name }}">
                 <button class="m-3 btn btn-sm btn-secondary" (click)="onboarding()">
                   Edit
                 </button>

@@ -98,8 +98,8 @@ export class AppComponent implements OnInit{
 
 
   logout() {
-    //this.http.post('http://34.133.29.95:80/logout', {}).pipe(
-    this.http.post('http://34.133.29.95:80/logout', {}).pipe(
+    //this.http.post('http://localhost:8080/logout', {}).pipe(
+    this.http.post('http://localhost:8080/logout', {}).pipe(
       finalize(() => {
         this.app.authenticated = false;
         this.app.saveData("SessionID","")
