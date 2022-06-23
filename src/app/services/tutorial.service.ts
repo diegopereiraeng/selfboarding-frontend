@@ -4,8 +4,8 @@ import { Tutorial } from '../models/tutorial.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AppService } from 'src/app/app.service';
 
-//const baseUrl = 'http://localhost:8080/api/tutorials';
-const baseUrl = 'http://localhost:8080/api/tutorials';
+//const baseUrl = 'http://34.133.29.95:80/api/tutorials';
+const baseUrl = 'http://34.133.29.95:80/api/tutorials';
 
 
 @Injectable({
